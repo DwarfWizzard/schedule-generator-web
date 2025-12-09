@@ -40,7 +40,7 @@ export default function EditEduDirection() {
     setLoading(true);
 
     try {
-      const body: any = {};
+      const body: {name?: string} = {};
       
       if (name) {
         body.name = name;

@@ -60,8 +60,8 @@ export default async function EduPlanPage({ params }: { params: Promise<{ id: st
           )}
           {plan.direction_id && (
             <div>
-              <dt className="text-sm font-medium text-gray-500">ID направления</dt>
-              <dd className="mt-1 text-sm text-gray-900">{plan.direction_id}</dd>
+              <dt className="text-sm font-medium text-gray-500">Направление / ID направления</dt>
+              <dd className="mt-1 text-sm text-gray-900">{plan.direction_name} / {plan.direction_id}</dd>
             </div>
           )}
         </dl>

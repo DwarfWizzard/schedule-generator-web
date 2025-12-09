@@ -3,6 +3,7 @@ export interface Department {
   external_id: string;
   faculty_id: string;
   name: string;
+  faculty_name: string;
 }
 
 export interface CreateDepartmentRequest {

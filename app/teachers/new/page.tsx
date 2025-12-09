@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
+import { Department } from "@/app/departments/types";
+import { apiFetch } from "@/app/apiFetch";
 
 export default function NewTeacher() {
   const router = useRouter();
@@ -12,6 +14,19 @@ export default function NewTeacher() {
   const [position, setPosition] = useState("");
   const [degree, setDegree] = useState("");
   const [loading, setLoading] = useState(false);
+  const [departments, setDepartments] = useState<Department[]>([])
+  
+  useEffect(() => {
+    async function fetchDepartments() {
+      try {
+        const data = await apiFetch<Department[]>("/v1/departments");
+        setDepartments(data.response || []);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    }
+    fetchDepartments();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -47,6 +62,25 @@ export default function NewTeacher() {
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
+            ID кафедры (UUID) <span className="text-red-500">*</span>
+          </label>
+          <select
+            value={departmentId}
+            onChange={(e) => setDepartmentId(e.target.value)}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
+          >
+            <option value="">Выберете кафедру</option>
+            {departments.map((department) => (
+              <option key={department.id} value={department.id}>
+                {department.name} ({department.id})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             ФИО преподавателя <span className="text-red-500">*</span>
           </label>
           <input
@@ -56,20 +90,6 @@ export default function NewTeacher() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
             placeholder="Введите ФИО преподавателя"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            ID кафедры (UUID) <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={departmentId}
-            onChange={(e) => setDepartmentId(e.target.value)}
-            required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
-            placeholder="UUID кафедры"
           />
         </div>
 

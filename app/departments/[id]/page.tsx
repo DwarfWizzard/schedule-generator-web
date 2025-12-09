@@ -64,8 +64,8 @@ export default async function DepartmentPage({ params }: { params: Promise<{ id:
           )}
           {department.faculty_id && (
             <div>
-              <dt className="text-sm font-medium text-gray-500">ID факультета</dt>
-              <dd className="mt-1 text-sm text-gray-900">{department.faculty_id}</dd>
+              <dt className="text-sm font-medium text-gray-500">Факультет / ID факультета</dt>
+              <dd className="mt-1 text-sm text-gray-900">{department.faculty_name} / {department.faculty_id}</dd>
             </div>
           )}
         </dl>

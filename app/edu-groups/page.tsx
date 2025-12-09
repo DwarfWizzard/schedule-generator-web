@@ -1,32 +1,16 @@
 import Link from "next/link";
 import { apiFetch } from "../apiFetch";
 import { EduGroup } from "./types";
-import { EduPlan } from "../edu-plans/types";
 
 export default async function EduGroupsPage() {
   let groups: EduGroup[] = [];
-  let plans: EduPlan[] = [];
 
   try {
     const data = await apiFetch<EduGroup[]>("/v1/edu-groups");
     groups = data.response ?? [];
   } catch (error) {
     console.error("Error fetching edu groups:", error);
-  }
-
-  // const planIds = [...new Set(groups.map(p => p.edu_plan_id))];
-  
-  // try {
-  //   const params = new URLSearchParams();
-  //   planIds.forEach(id => params.append("ids", id));
-
-  //   const data = await apiFetch<EduPlan[]>(`/v1/edu-plans?${params}`);
-  //   plans = data.response ?? [];
-  // }catch (error) {
-  //   console.error("Error fetching directions:", error);
-  // }
-
-  // const planMap = new Map(plans.map(d => [d.id, d]));  
+  } 
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -11,22 +11,29 @@ const weekdayLabels: Record<string, string> = {
   "Saturday": "Суббота",
 };
 
-
-
 const maxSubgroups = 2
-const maxWeektypes = 2
 
 export default async function SchedulePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   let schedule: Schedule | null = null;
+  let group: EduGroup | null = null;
 
   try {
-    const data = await apiFetch(`/v1/schedules/${id}`);
-    schedule = data.response;
-    console.log(schedule)
+    const data = await apiFetch<Schedule>(`/v1/schedules/${id}`);
+    schedule = data.response ?? null;
   } catch (error) {
     console.error("Error fetching schedule:", error);
   }
+
+  if (schedule) {
+    try {
+      const data = await apiFetch<EduGroup>(`/v1/edu-groups/${schedule.edu_group_id}`);
+      group = data.response ?? null;
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    }
+  }
+  
 
   if (!schedule) {
     return (
@@ -39,7 +46,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
     );
   }
 
-  let itemsPerWeekdayAndLessonNumber: Record<string, Record<number, ScheduleItem[]>> = {};
+  const itemsPerWeekdayAndLessonNumber: Record<string, Record<number, ScheduleItem[]>> = {};
   if (schedule.type === ScheduleType.cycled && schedule.items) {
     schedule.items.forEach((item: ScheduleItem) => {
       const weekday = item.weekday
@@ -55,8 +62,6 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
     })
   }
 
-  console.log(itemsPerWeekdayAndLessonNumber)
-
   const columns = ["Номер пары", ...Object.keys(weekdayLabels)];
 
   const table = Array.from({ length: 7 }, (_, index) => {
@@ -69,8 +74,6 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
         }
 
         const lessonNumber = index
-
-        console.log(weekday, lessonNumber, itemsPerWeekdayAndLessonNumber[weekday]?.[lessonNumber])
 
         const items = itemsPerWeekdayAndLessonNumber[weekday]?.[lessonNumber]
         if (row[weekday] && items) {
@@ -130,6 +133,14 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
               </dd>
             </div>
           )}
+          {group && (
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Номер группы / ID</dt>
+              <dd className="mt-1 text-sm text-gray-900">
+                {group.number} / {group.id}
+              </dd>
+            </div>
+          )}
         </dl>
       </div>
 
@@ -146,7 +157,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
               <tr>
                 {columns.map((col) => (
                   <th key={col} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-300">
-                    {col}
+                    {weekdayLabels[col] ?? col}
                   </th>
                 ))}
               </tr>
@@ -168,7 +179,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                     {lessonNumber}
                   </td>
                   
-                  {columns.slice(1).map((col, i) => {
+                  {columns.slice(1).map((col) => {
                       const items = row[col];
 
                       let printAddWeek = false
@@ -191,8 +202,24 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                           className="p-0 border border-gray-300 text-gray-500 align-top"
                         >
                           {items.map((itemList, i) => {
+                            let fullSize = false
+
+                            let subgroups = maxSubgroups
+
                             if (i == ScheduleItemWeektype.both) {
+                              const sg = new Set(itemList.filter(d => d.subgroup !== 0).map(d => d.subgroup)).size + 1
+                              if (sg === 1) {
+                                fullSize = true
+                              }
+                              
                               printAddWeek = false
+                              subgroups = sg
+                            } else if ((itemList.length == 1 && itemList[0].subgroup == 0)) {
+                              fullSize = true
+                              printAddWeek = false
+                              subgroups = new Set(itemList.filter(d => d.subgroup !== 0).map(d => d.subgroup)).size + 1
+                            } else if (i != ScheduleItemWeektype.both && (items[i+1].length > 0 && i+1 != ScheduleItemWeektype.both)) {
+                              printAddWeek = true
                             }
 
                             if (itemList.length == 0) {
@@ -210,31 +237,17 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                               return;
                             }
 
-                            let fullSize = false
-
-                            let subgroups = maxSubgroups
-
-                            if (i == ScheduleItemWeektype.both || (itemList.length == 1 && itemList[0].subgroup == 0) ) {
-                              fullSize = true
-                              subgroups = new Set(itemList.filter(d => d.subgroup !== 0).map(d => d.subgroup)).size + 1
-                            } else if (i != ScheduleItemWeektype.both) {
-                              printAddWeek = true
-                            }
-
-                            console.log(subgroups, itemList)
-
                             if (fullSize) {
                               // один блок на всю строку
                               const item = itemList[0];
 
                               return (
-                                <div
+                                <ScheduleCell
                                   key={`full-${i}`}
-                                  className="w-full border text-xs grid place-items-center px-1 py-0.5 truncate h-15"
-                                >
-                                  <p className="truncate">{item?.discipline}</p>
-                                  <p className="truncate text-gray-400 text-[12px]">ауд. {item?.classroom}</p>
-                                </div>
+                                  scheduleId={schedule.id}
+                                  item={item}
+                                  fullSize={true}
+                                />
                               );
                             }
 
@@ -245,22 +258,15 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                                 className="flex h-full w-full text-xs sm:text-sm"
                               >
                                 {Array.from({ length: subgroups }, (_, subgroup) => {
-                                  const item = itemList.find(i => i.subgroup === subgroup);
+                                  const item = itemList.find(i => i.subgroup === subgroup+1);
 
                                   return (
-                                    <div
+                                    <ScheduleCell
                                       key={`${subgroup}-${i}`}
-                                      className="border text-xs grid place-items-center px-1 py-0.5 truncate w-1/2"
-                                    >
-                                      {item ? (
-                                        <>
-                                          <p className="truncate">{item.discipline}</p>
-                                          <p className="truncate text-gray-400 text-[12px]">ауд. {item.classroom}</p>
-                                        </>
-                                      ) : (
-                                        <p className="truncate">-</p>
-                                      )}
-                                    </div>
+                                      scheduleId={schedule.id}
+                                      item={item ?? null}
+                                      fullSize={subgroups === 0}
+                                    />
                                   );
                                 })}
                               </div>
@@ -281,5 +287,6 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
   );
 }
 
-import DeleteItemButton from "./DeleteItemButton";
-import { Schedule, ScheduleItem, ScheduleItemWeektype, ScheduleType, scheduleTypeLabels } from "../types";
+import { Schedule, ScheduleItem, ScheduleItemWeektype, ScheduleType, scheduleTypeLabels } from "../types";import { EduGroup } from "@/app/edu-groups/types";
+import { ScheduleCell } from "./ScheduleCell";
+

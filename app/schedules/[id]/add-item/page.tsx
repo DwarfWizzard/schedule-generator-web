@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { getApiUrl, handleApiResponse, formatApiError } from "../../../utils/api";
+import { ScheduleItemLectureType, scheduleItemLectureTypeLabels, ScheduleItemWeektype, scheduleItemWeektypeLabels } from "../../types";
+import { apiFetch } from "@/app/apiFetch";
+import { Faculty } from "@/app/faculties/types";
+import { Teacher } from "@/app/teachers/types";
 
 export default function AddScheduleItem() {
   const router = useRouter();
@@ -11,10 +15,28 @@ export default function AddScheduleItem() {
   const scheduleId = params.id as string;
 
   const [weekday, setWeekday] = useState(1);
-  const [lessonNumber, setLessonNumber] = useState(1);
+  const [studentsCount, setStudentsCount] = useState(0);
+  const [lessonNumber, setLessonNumber] = useState(0);
+  const [subgroup, setSubgroup] = useState(0);
+  const [weektype, setWeektype] = useState(ScheduleItemWeektype.both)
+  const [lessontype, setLessonType] = useState(ScheduleItemLectureType.lecture)
   const [discipline, setDiscipline] = useState("");
   const [teacherId, setTeacherId] = useState("");
+  const [classroom, setClassroom] = useState("");
   const [loading, setLoading] = useState(false);
+  const [teachers, setTeachers] = useState<Teacher[]>([])
+        
+  useEffect(() => {
+    async function fetchTeachers() {
+      try {
+        const data = await apiFetch<Teacher[]>("/v1/teachers");
+        setTeachers(data.response || []);
+      } catch (error) {
+        console.error("Error fetching teacher:", error);
+      }
+    }
+    fetchTeachers();
+  }, []);
 
   const weekdays = [
     { value: 1, label: "Понедельник" },
@@ -32,14 +54,21 @@ export default function AddScheduleItem() {
 
     try {
       const response = await fetch(`${getApiUrl()}/v1/schedules/${scheduleId}/items`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          weekday,
-          lesson_number: lessonNumber,
-          discipline,
-          teacher_id: teacherId || undefined,
-        }),
+        body: JSON.stringify([
+          {
+            weekday: weekday,
+            lesson_number: lessonNumber,
+            weektype: Number(weektype),
+            discipline: discipline,
+            teacher_id: teacherId,
+            lesson_type: Number(lessontype),
+            students_count: studentsCount,
+            subgroup: subgroup,
+            classroom: classroom,
+          }
+        ]),
       });
 
       await handleApiResponse(response);
@@ -73,7 +102,7 @@ export default function AddScheduleItem() {
             value={weekday}
             onChange={(e) => setWeekday(Number(e.target.value))}
             required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
             {weekdays.map((day) => (
               <option key={day.value} value={day.value}>
@@ -84,18 +113,39 @@ export default function AddScheduleItem() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-500 mb-2">
             Номер пары
           </label>
           <input
             type="number"
-            value={lessonNumber}
-            onChange={(e) => setLessonNumber(Number(e.target.value))}
+            value={lessonNumber+1}
+            onChange={(e) => setLessonNumber(Number(e.target.value)-1)}
             required
             min="1"
-            max="10"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            max="8"
+            className="w-full border border-gray-300 text-gray-500 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Тип недели
+          </label>
+          <select
+            value={weektype}
+            onChange={(e) => setWeektype(Number(e.target.value))}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
+          >
+            <option value="">Выберете тип недели</option>
+            {(Object.keys(scheduleItemWeektypeLabels) as unknown as ScheduleItemWeektype[]).map(
+              (key) => (
+                <option key={key} value={key}>
+                  {scheduleItemWeektypeLabels[key]}
+                </option>
+              )
+            )}
+          </select>
         </div>
 
         <div className="mb-4">
@@ -107,21 +157,90 @@ export default function AddScheduleItem() {
             value={discipline}
             onChange={(e) => setDiscipline(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="w-full border border-gray-300 text-gray-500 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             placeholder="Введите название предмета"
           />
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            ID преподавателя (опционально)
+            ID преподавателя
+          </label>
+          <select
+            value={teacherId}
+            onChange={(e) => setTeacherId(e.target.value)}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
+          >
+            <option value="">Выберете преподавателя</option>
+            {teachers.map((teacher) => (
+              <option key={teacher.id} value={teacher.id}>
+                {teacher.name} ({teacher.id})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Тип занятия
+          </label>
+          <select
+            value={lessontype}
+            onChange={(e) => setLessonType(Number(e.target.value))}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
+          >
+            <option value="">Выберете тип занятия</option>
+            {(Object.keys(scheduleItemLectureTypeLabels) as unknown as ScheduleItemLectureType[]).map(
+              (key) => (
+                <option key={key} value={key}>
+                  {scheduleItemLectureTypeLabels[key]}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-500 mb-2">
+            Число студентов
+          </label>
+          <input
+            type="number"
+            value={studentsCount}
+            onChange={(e) => setStudentsCount(Number(e.target.value))}
+            required
+            min="0"
+            className="w-full border border-gray-300 text-gray-500 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-500 mb-2">
+            Подгруппа (значение 0 указывает, что занятие для всех подгрупп)
+          </label>
+          <input
+            type="number"
+            value={subgroup}
+            onChange={(e) => setSubgroup(Number(e.target.value))}
+            required
+            min="0"
+            className="w-full border border-gray-300 text-gray-500 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Аудитория
           </label>
           <input
             type="text"
-            value={teacherId}
-            onChange={(e) => setTeacherId(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-            placeholder="UUID преподавателя"
+            value={classroom}
+            onChange={(e) => setClassroom(e.target.value)}
+            required
+            className="w-full border border-gray-300 text-gray-500 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            placeholder="Укажите аудиторию"
           />
         </div>
 

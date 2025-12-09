@@ -1,32 +1,17 @@
 import Link from "next/link";
 import { apiFetch } from "../apiFetch";
 import { Schedule, scheduleTypeLabels } from "./types";
-import { EduGroup } from "../edu-groups/types";
 
 export default async function SchedulesPage() {
-    let schedules: Schedule[] = [];
-    let groups: EduGroup[] = [];
+  let schedules: Schedule[] = [];
 
-    try {
-      const data = await apiFetch<Schedule[]>("/v1/schedules");
-      schedules = data.response ?? [];
-    } catch (error) {
-      console.error("Error fetching schedules:", error);
-    }
+  try {
+    const data = await apiFetch<Schedule[]>("/v1/schedules");
+    schedules = data.response ?? [];
+  } catch (error) {
+    console.error("Error fetching schedules:", error);
+  }
 
-    const planIds = [...new Set(groups.map(p => p.edu_plan_id))];
-    
-    try {
-      const params = new URLSearchParams();
-      planIds.forEach(id => params.append("ids", id));
-
-      const data = await apiFetch<EduGroup[]>(`/v1/edu-groups?${params}`);
-      groups = data.response ?? [];
-    }catch (error) {
-      console.error("Error fetching directions:", error);
-    }
-
-    const groupMap = new Map(groups.map(d => [d.id, d]));  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -74,7 +59,7 @@ export default async function SchedulesPage() {
                     {s.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={s.edu_group_id}>
-                    {groupMap.get(s.edu_group_id)?.number || "—"}
+                    {s.edu_group_number || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {s.semester || "—"}

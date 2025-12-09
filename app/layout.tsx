@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,14 +32,14 @@ export default function RootLayout({
           <div className="container mx-auto px-4 py-3">
             <div className="flex items-center justify-between">
               <h1 className="text-xl font-bold">Система управления расписаниями</h1>
-              <div className="flex gap-4">
-                <a href="/" className="hover:text-blue-200 transition">Главная</a>
-                <a href="/departments" className="hover:text-blue-200 transition">Кафедры</a>
-                <a href="/edu-directions" className="hover:text-blue-200 transition">Направления</a>
-                <a href="/edu-plans" className="hover:text-blue-200 transition">Учебные планы</a>
-                <a href="/edu-groups" className="hover:text-blue-200 transition">Группы</a>
-                <a href="/teachers" className="hover:text-blue-200 transition">Преподаватели</a>
-                <a href="/schedules" className="hover:text-blue-200 transition">Расписания</a>
+              <div className="flex gap-4"> 
+                <Link href="/" className="hover:text-blue-200 transition">Главная</Link>
+                <Link href="/departments" className="hover:text-blue-200 transition">Кафедры</Link>
+                <Link href="/edu-directions" className="hover:text-blue-200 transition">Направления</Link>
+                <Link href="/edu-plans" className="hover:text-blue-200 transition">Учебные планы</Link>
+                <Link href="/edu-groups" className="hover:text-blue-200 transition">Группы</Link>
+                <Link href="/teachers" className="hover:text-blue-200 transition">Преподаватели</Link>
+                <Link href="/schedules" className="hover:text-blue-200 transition">Расписания</Link>
               </div>
             </div>
           </div>

@@ -1,0 +1,67 @@
+"use client";
+
+import { ScheduleItem, scheduleItemLectureTypeLabels, ScheduleItemWeektype } from "../types";
+import DeleteItemButton from "./DeleteItemButton";
+
+export function ScheduleCell({scheduleId, item, fullSize}: { scheduleId: string; item: ScheduleItem | null; fullSize: boolean}) {
+  const getWeekTypeClass = (weektype: ScheduleItemWeektype | undefined): string => {
+    if (weektype === undefined) {
+      return 'bg-orange-50 bg-opacity-5';
+    }
+
+    switch (weektype) {
+      case ScheduleItemWeektype.both:
+        return 'bg-orange-50 bg-opacity-5';
+      case ScheduleItemWeektype.even:
+        return 'bg-green-200 bg-opacity-5';
+      case ScheduleItemWeektype.odd:
+        return 'bg-blue-200 bg-opacity-5';
+      default:
+        return '';
+    }
+  };
+  
+  if (fullSize) {
+    if (!item) return;
+
+    console.log(item)
+
+    return (
+      <div
+        className={`w-full border text-xs grid place-items-center px-1 py-0.5 truncate relative group ${getWeekTypeClass(item.weektype)}`}
+      >
+        <p className="truncate text-gray-400 text-[10px]">{scheduleItemLectureTypeLabels[item.lesson_type]}</p>
+        <p className="truncate">{item.discipline}</p>
+        <p className="truncate text-gray-400 text-[12px]">ауд. {item.classroom}</p>
+
+        <DeleteItemButton
+        scheduleId={scheduleId}
+        item={item}
+        />
+      </div>
+    );
+  }
+
+    return (
+        <div
+          className={`border text-xs grid place-items-center px-1.5 py-0.5 truncate w-1/2 relative group ${getWeekTypeClass(item?.weektype)}}`}
+        >
+          {item ? (
+            <>
+              <p className="truncate text-gray-400 text-[10px]">{scheduleItemLectureTypeLabels[item.lesson_type]}</p>
+              <p className="truncate">{item.discipline}</p>
+              <p className="truncate text-gray-400 text-[10px]">ауд. {item.classroom}</p>
+            </>
+          ) : (
+            <p className="truncate">-</p>
+          )}
+
+          {item && (
+            <DeleteItemButton
+            scheduleId={scheduleId}
+            item={item}
+            />
+        )}
+        </div>
+    );
+}

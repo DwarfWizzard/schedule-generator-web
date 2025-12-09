@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
+import { EduDirection } from "@/app/edu-directions/types";
+import { apiFetch } from "@/app/apiFetch";
 
 export default function NewEduPlan() {
   const router = useRouter();
@@ -10,6 +12,19 @@ export default function NewEduPlan() {
   const [profile, setProfile] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [loading, setLoading] = useState(false);
+  const [eduDirections, setEduDirections] = useState<EduDirection[]>([])
+  
+  useEffect(() => {
+    async function fetchEduDirections() {
+      try {
+        const data = await apiFetch<EduDirection[]>("/v1/edu-directions");
+        setEduDirections(data.response || []);
+      } catch (error) {
+        console.error("Error fetching edu directions:", error);
+      }
+    }
+    fetchEduDirections();
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,14 +60,19 @@ export default function NewEduPlan() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             ID направления подготовки (UUID) <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
+          <select
             value={directionId}
             onChange={(e) => setDirectionId(e.target.value)}
             required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-500 placeholder-gray-500"
-            placeholder="Введите UUID направления подготовки"
-          />
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
+          >
+            <option value="">Выберете направление подготовки</option>
+            {eduDirections.map((dir) => (
+              <option key={dir.id} value={dir.id}>
+                {dir.name} ({dir.id})
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-4">

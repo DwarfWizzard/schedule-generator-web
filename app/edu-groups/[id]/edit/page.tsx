@@ -40,7 +40,7 @@ export default function EditEduGroup() {
     setLoading(true);
 
     try {
-      const body: any = {};
+      const body: {number?: string} = {};
       
       if (number) {
         body.number = number;

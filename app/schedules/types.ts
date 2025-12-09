@@ -14,13 +14,29 @@ export enum ScheduleItemWeektype {
     both = 2
 }
 
-enum ScheduleItemLectureType {
-    lecture = "lecture",
-	practice = "practice",
-	seminar = "seminar",
-	exam = "exam",
-	laboratory = "laboratory",
+export const scheduleItemWeektypeLabels: Record<ScheduleItemWeektype, string> = {
+  [ScheduleItemWeektype.even]: "четная неделя",
+  [ScheduleItemWeektype.odd]:  "нечетная неделя",
+  [ScheduleItemWeektype.both]: "все недели",
+};
+
+export const weekdayLables = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+export enum ScheduleItemLectureType {
+    lecture = 0,
+	practice = 1,
+	seminar = 2,
+	exam = 3,
+	laboratory = 4,
 }
+
+export const scheduleItemLectureTypeLabels: Record<ScheduleItemLectureType, string> = {
+  [ScheduleItemLectureType.lecture]: "лекция",
+  [ScheduleItemLectureType.practice]: "практика",
+  [ScheduleItemLectureType.seminar]: "семинар",
+  [ScheduleItemLectureType.exam]: "экзамен",
+  [ScheduleItemLectureType.laboratory]: "лабораторная",
+};
 
 export interface ScheduleItem {
     discipline: string;
@@ -39,6 +55,7 @@ export interface ScheduleItem {
 export interface Schedule {
     id: string;
     edu_group_id: string;
+    edu_group_number: string;
     semester: number,
     type: ScheduleType;
     start_date?: Date;

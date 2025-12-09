@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { apiFetch } from "../apiFetch";
 import { EduDirection } from "./types";
-import { Department } from "../departments/types";
 
 export default async function EducationDirectionsPage() {
   let directions: EduDirection[] = [];
-  let departments: Department[] = [];
   
   try {
     const data = await apiFetch<EduDirection[]>("/v1/edu-directions");
@@ -13,20 +11,6 @@ export default async function EducationDirectionsPage() {
   } catch (error) {
     console.error("Error fetching education directions:", error);
   }
-
-  const depIds = [...new Set(directions.map(d => d.department_id))];
-
-  try {
-    const params = new URLSearchParams();
-    depIds.forEach(id => params.append("ids", id));
-
-    const data = await apiFetch<Department[]>(`/v1/departments?${params}`);
-    departments = data.response ?? [];
-  }catch (error) {
-    console.error("Error fetching departments:", error);
-  }
-
-  const depMap = new Map(departments.map(d => [d.id, d]));
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -71,7 +55,7 @@ export default async function EducationDirectionsPage() {
                     {dir.name || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={dir.department_id}>
-                    {depMap.get(dir.department_id)?.name || "—"}
+                    {dir.department_name || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link

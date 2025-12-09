@@ -40,7 +40,7 @@ export default async function DepartmentsPage() {
                   Внешний ID
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ID факультета
+                  Факультет
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Действия
@@ -59,8 +59,8 @@ export default async function DepartmentsPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {dept.external_id || "—"}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {dept.faculty_id || "—"}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={dept.faculty_id}>
+                    {dept.faculty_name || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link

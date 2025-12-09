@@ -7,7 +7,7 @@ export function getApiUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = object> {
   status: number;
   response?: T;
   message?: string;
@@ -29,7 +29,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function handleApiResponse<T = any>(response: Response): Promise<ApiResponse<T>> {
+export async function handleApiResponse<T = object>(response: Response): Promise<ApiResponse<T>> {
   const data: ApiResponse<T> = await response.json();
 
   // Проверяем статус из ответа API, а не HTTP статус

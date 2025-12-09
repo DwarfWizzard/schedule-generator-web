@@ -2,7 +2,7 @@ function getApiBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = object> {
   status: number;
   response?: T;
   message?: string;
@@ -24,7 +24,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiFetch<T = any>(path: string, options?: RequestInit): Promise<ApiResponse<T>> {
+export async function apiFetch<T = object>(path: string, options?: RequestInit): Promise<ApiResponse<T>> {
   const base = getApiBaseUrl();
   const res = await fetch(base + path, {
     ...options,

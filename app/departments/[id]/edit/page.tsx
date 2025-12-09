@@ -42,7 +42,7 @@ export default function EditDepartment() {
     setLoading(true);
 
     try {
-      const body: any = {};
+      const body: {name?: string; external_id?: string} = {};
       
       if (name) {
         body.name = name;
