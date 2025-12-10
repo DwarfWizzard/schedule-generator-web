@@ -1,4 +1,4 @@
-import { apiFetch } from "../../apiFetch";
+import { apiFetchServer } from "../../apiFetch";
 import Link from "next/link";
 import { Department } from "../types";
 import DeleteDepartmentButton from "./DeleteDepartmentButton";
@@ -8,7 +8,7 @@ export default async function DepartmentPage({ params }: { params: Promise<{ id:
   let department: Department | null = null;
 
   try {
-    const data = await apiFetch<Department>(`/v1/departments/${id}`);
+    const data = await apiFetchServer<Department>(`/v1/departments/${id}`);
     department = data.response ?? null;
   } catch (error) {
     console.error("Error fetching department:", error);

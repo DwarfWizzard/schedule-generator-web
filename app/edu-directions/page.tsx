@@ -1,16 +1,24 @@
-import Link from "next/link";
-import { apiFetch } from "../apiFetch";
-import { EduDirection } from "./types";
+"use client";
 
-export default async function EducationDirectionsPage() {
-  let directions: EduDirection[] = [];
-  
-  try {
-    const data = await apiFetch<EduDirection[]>("/v1/edu-directions");
-    directions = data.response ?? [];
-  } catch (error) {
-    console.error("Error fetching education directions:", error);
-  }
+import Link from "next/link";
+import { apiFetchClient } from "../apiFetch";
+import { EduDirection } from "./types";
+import { useEffect, useState } from "react";
+
+export default function EducationDirectionsPage() {
+  const [directions, setEduDirections] = useState<EduDirection[]>([])
+    
+    useEffect(() => {
+      async function fetchEduDirections() {
+        try {
+          const data = await apiFetchClient<EduDirection[]>("/v1/edu-directions");
+          setEduDirections(data.response || []);
+        } catch (error) {
+          console.error("Error fetching edu directions:", error);
+        }
+      }
+      fetchEduDirections();
+    }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

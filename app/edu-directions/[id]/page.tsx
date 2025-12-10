@@ -1,4 +1,4 @@
-import { apiFetch } from "../../apiFetch";
+import { apiFetchServer } from "../../apiFetch";
 import Link from "next/link";
 import { EduDirection } from "../types";
 import DeleteEduDirectionButton from "./DeleteEduDirectionButton";
@@ -8,7 +8,7 @@ export default async function EducationDirectionPage({ params }: { params: Promi
   let direction: EduDirection | null = null;
 
   try {
-    const data = await apiFetch<EduDirection>(`/v1/edu-directions/${id}`);
+    const data = await apiFetchServer<EduDirection>(`/v1/edu-directions/${id}`);
     direction = data.response ?? null;
   } catch (error) {
     console.error("Error fetching education direction:", error);

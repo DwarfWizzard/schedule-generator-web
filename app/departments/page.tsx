@@ -1,15 +1,24 @@
-import Link from "next/link";
-import { apiFetch } from "../apiFetch";
-import { Department } from "./types";
+"use client";
 
-export default async function DepartmentsPage() {
-  let departments: Department[] = [];
-  try {
-    const data = await apiFetch<Department[]>("/v1/departments");
-    departments = data.response ?? [];
-  } catch (error) {
-    console.error("Error fetching departments:", error);
-  }
+import Link from "next/link";
+import { apiFetchClient } from "../apiFetch";
+import { Department } from "./types";
+import { useEffect, useState } from "react";
+
+export default function DepartmentsPage() {
+  const [departments, setDepartments] = useState<Department[]>([])
+  
+  useEffect(() => {
+      async function fetchDepartments() {
+        try {
+          const data = await apiFetchClient<Department[]>("/v1/departments");
+          setDepartments(data.response || []);
+        } catch (error) {
+          console.error("Error fetching departments:", error);
+        }
+      }
+      fetchDepartments();
+    }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

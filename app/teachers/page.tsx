@@ -1,15 +1,24 @@
-import Link from "next/link";
-import { apiFetch } from "../apiFetch";
-import { Teacher } from "./types";
+"use client";
 
-export default async function TeachersPage() {
-  let teachers: Teacher[] = [];
-  try {
-    const data = await apiFetch<Teacher[]>("/v1/teachers");
-    teachers = data.response ?? [];
-  } catch (error) {
-    console.error("Error fetching teachers:", error);
-  }
+import Link from "next/link";
+import { apiFetchClient } from "../apiFetch";
+import { Teacher } from "./types";
+import { useEffect, useState } from "react";
+
+export default function TeachersPage() {
+  const [teachers, setTeachers] = useState<Teacher[]>([])
+          
+    useEffect(() => {
+      async function fetchTeachers() {
+        try {
+          const data = await apiFetchClient<Teacher[]>("/v1/teachers");
+          setTeachers(data.response || []);
+        } catch (error) {
+          console.error("Error fetching teacher:", error);
+        }
+      }
+      fetchTeachers();
+    }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

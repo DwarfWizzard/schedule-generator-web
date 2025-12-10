@@ -1,7 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
+import { handleApiResponse, formatApiError } from "../../utils/api";
+import { getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function DeleteEduGroupButton({ eduGroupId }: { eduGroupId: string }) {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function DeleteEduGroupButton({ eduGroupId }: { eduGroupId: strin
     }
 
     try {
-      const response = await fetch(`${getApiUrl()}/v1/edu-groups/${eduGroupId}`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-groups/${eduGroupId}`, {
         method: "DELETE",
       });
 

@@ -1,4 +1,4 @@
-import { apiFetch } from "../../apiFetch";
+import { apiFetchServer } from "../../apiFetch";
 import Link from "next/link";
 import { EduGroup } from "../types";
 import DeleteEduGroupButton from "./DeleteEduGroupButton";
@@ -8,7 +8,7 @@ export default async function EduGroupPage({ params }: { params: Promise<{ id: s
   let group: EduGroup | null = null;
 
   try {
-    const data = await apiFetch<EduGroup>(`/v1/edu-groups/${id}`);
+    const data = await apiFetchServer<EduGroup>(`/v1/edu-groups/${id}`);
     group = data.response ?? null;
   } catch (error) {
     console.error("Error fetching edu group:", error);

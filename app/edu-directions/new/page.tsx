@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
+import { handleApiResponse, formatApiError } from "../../utils/api";
 import { Department } from "@/app/departments/types";
-import { apiFetch } from "@/app/apiFetch";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function NewEducationDirection() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function NewEducationDirection() {
   useEffect(() => {
     async function fetchDepartments() {
       try {
-        const data = await apiFetch<Department[]>("/v1/departments");
+        const data = await apiFetchClient<Department[]>("/v1/departments");
         setDepartments(data.response || []);
       } catch (error) {
         console.error("Error fetching departments:", error);
@@ -30,7 +30,7 @@ export default function NewEducationDirection() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getApiUrl()}/v1/edu-directions`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-directions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -64,7 +64,7 @@ export default function NewEducationDirection() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете кафедру</option>
+            <option value="">Выберите кафедру</option>
             {departments.map((department) => (
               <option key={department.id} value={department.id}>
                 {department.name} ({department.id})

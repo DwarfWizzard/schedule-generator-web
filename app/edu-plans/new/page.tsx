@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
+import { handleApiResponse, formatApiError } from "../../utils/api";
 import { EduDirection } from "@/app/edu-directions/types";
-import { apiFetch } from "@/app/apiFetch";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function NewEduPlan() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function NewEduPlan() {
   useEffect(() => {
     async function fetchEduDirections() {
       try {
-        const data = await apiFetch<EduDirection[]>("/v1/edu-directions");
+        const data = await apiFetchClient<EduDirection[]>("/v1/edu-directions");
         setEduDirections(data.response || []);
       } catch (error) {
         console.error("Error fetching edu directions:", error);
@@ -31,7 +31,7 @@ export default function NewEduPlan() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getApiUrl()}/v1/edu-plans`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-plans`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -66,7 +66,7 @@ export default function NewEduPlan() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете направление подготовки</option>
+            <option value="">Выберите направление подготовки</option>
             {eduDirections.map((dir) => (
               <option key={dir.id} value={dir.id}>
                 {dir.name} ({dir.id})

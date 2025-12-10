@@ -1,16 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import { apiFetch } from "../apiFetch";
+import { apiFetchClient } from "../apiFetch";
 import { EduPlan } from "./types";
+import { useEffect, useState } from "react";
 
-export default async function EduPlansPage() {
-  let plans: EduPlan[] = [];
-
-  try {
-    const data = await apiFetch<EduPlan[]>("/v1/edu-plans");
-    plans = data.response ?? [];
-  } catch (error) {
-    console.error("Error fetching edu plans:", error);
-  }
+export default function EduPlansPage() {
+  const [plans, setEduPlans] = useState<EduPlan[]>([])
+      
+    useEffect(() => {
+      async function fetchEduPlans() {
+        try {
+          const data = await apiFetchClient<EduPlan[]>("/v1/edu-plans");
+          setEduPlans(data.response || []);
+        } catch (error) {
+          console.error("Error fetching edu plans:", error);
+        }
+      }
+      fetchEduPlans();
+    }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

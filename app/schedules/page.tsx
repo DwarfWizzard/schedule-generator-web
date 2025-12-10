@@ -1,16 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import { apiFetch } from "../apiFetch";
+import { apiFetchClient } from "../apiFetch";
 import { Schedule, scheduleTypeLabels } from "./types";
+import { useEffect, useState } from "react";
 
-export default async function SchedulesPage() {
-  let schedules: Schedule[] = [];
+export default function SchedulesPage() {
+  const [schedules, setSchedules] = useState<Schedule[]>([])
 
-  try {
-    const data = await apiFetch<Schedule[]>("/v1/schedules");
-    schedules = data.response ?? [];
-  } catch (error) {
-    console.error("Error fetching schedules:", error);
-  }
+  useEffect(() => {
+      async function fetchSchedules() {
+        try {
+          const data = await apiFetchClient<Schedule[]>("/v1/schedules");
+          setSchedules(data.response || []);
+        } catch (error) {
+          console.error("Error fetching edu plans:", error);
+        }
+      }
+      fetchSchedules();
+    }, []);
 
 
   return (

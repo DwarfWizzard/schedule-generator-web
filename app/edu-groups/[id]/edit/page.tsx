@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../../utils/api";
+import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { EduGroup } from "../../types";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function EditEduGroup() {
   const router = useRouter();
@@ -18,8 +19,7 @@ export default function EditEduGroup() {
   useEffect(() => {
     async function fetchEduGroup() {
       try {
-        const response = await fetch(`${getApiUrl()}/v1/edu-groups/${id}`);
-        const data = await handleApiResponse<EduGroup>(response);
+        const data = await apiFetchClient<EduGroup>(`/v1/edu-groups/${id}`);
         
         if (data.response) {
           setNumber(data.response.number || "");
@@ -46,7 +46,7 @@ export default function EditEduGroup() {
         body.number = number;
       }
 
-      const response = await fetch(`${getApiUrl()}/v1/edu-groups/${id}`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-groups/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

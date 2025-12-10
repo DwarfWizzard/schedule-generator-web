@@ -1,4 +1,4 @@
-import { apiFetch } from "../../apiFetch";
+import { apiFetchServer } from "../../apiFetch";
 import Link from "next/link";
 import ExportCSVButton from "./ExportCSVButton";
 
@@ -19,7 +19,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
   let group: EduGroup | null = null;
 
   try {
-    const data = await apiFetch<Schedule>(`/v1/schedules/${id}`);
+    const data = await apiFetchServer<Schedule>(`/v1/schedules/${id}`);
     schedule = data.response ?? null;
   } catch (error) {
     console.error("Error fetching schedule:", error);
@@ -27,7 +27,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
 
   if (schedule) {
     try {
-      const data = await apiFetch<EduGroup>(`/v1/edu-groups/${schedule.edu_group_id}`);
+      const data = await apiFetchServer<EduGroup>(`/v1/edu-groups/${schedule.edu_group_id}`);
       group = data.response ?? null;
     } catch (error) {
       console.error("Error fetching groups:", error);

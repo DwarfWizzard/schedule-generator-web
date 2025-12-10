@@ -1,4 +1,4 @@
-import { apiFetch } from "../../apiFetch";
+import { apiFetchServer } from "../../apiFetch";
 import Link from "next/link";
 import { EduPlan } from "../types";
 import DeleteEduPlanButton from "./DeleteEduPlanButton";
@@ -8,7 +8,7 @@ export default async function EduPlanPage({ params }: { params: Promise<{ id: st
   let plan: EduPlan | null = null;
 
   try {
-    const data = await apiFetch<EduPlan>(`/v1/edu-plans/${id}`);
+    const data = await apiFetchServer<EduPlan>(`/v1/edu-plans/${id}`);
     plan = data.response ?? null;
   } catch (error) {
     console.error("Error fetching edu plan:", error);

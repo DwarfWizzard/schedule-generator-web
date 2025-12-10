@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../../utils/api";
+import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { ScheduleItemLectureType, scheduleItemLectureTypeLabels, ScheduleItemWeektype, scheduleItemWeektypeLabels } from "../../types";
-import { apiFetch } from "@/app/apiFetch";
-import { Faculty } from "@/app/faculties/types";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 import { Teacher } from "@/app/teachers/types";
 
 export default function AddScheduleItem() {
@@ -29,7 +28,7 @@ export default function AddScheduleItem() {
   useEffect(() => {
     async function fetchTeachers() {
       try {
-        const data = await apiFetch<Teacher[]>("/v1/teachers");
+        const data = await apiFetchClient<Teacher[]>("/v1/teachers");
         setTeachers(data.response || []);
       } catch (error) {
         console.error("Error fetching teacher:", error);
@@ -53,7 +52,7 @@ export default function AddScheduleItem() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getApiUrl()}/v1/schedules/${scheduleId}/items`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules/${scheduleId}/items`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify([
@@ -137,7 +136,7 @@ export default function AddScheduleItem() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете тип недели</option>
+            <option value="">Выберите тип недели</option>
             {(Object.keys(scheduleItemWeektypeLabels) as unknown as ScheduleItemWeektype[]).map(
               (key) => (
                 <option key={key} value={key}>
@@ -172,7 +171,7 @@ export default function AddScheduleItem() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете преподавателя</option>
+            <option value="">Выберите преподавателя</option>
             {teachers.map((teacher) => (
               <option key={teacher.id} value={teacher.id}>
                 {teacher.name} ({teacher.id})
@@ -191,7 +190,7 @@ export default function AddScheduleItem() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете тип занятия</option>
+            <option value="">Выберите тип занятия</option>
             {(Object.keys(scheduleItemLectureTypeLabels) as unknown as ScheduleItemLectureType[]).map(
               (key) => (
                 <option key={key} value={key}>

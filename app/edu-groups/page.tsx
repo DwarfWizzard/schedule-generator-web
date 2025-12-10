@@ -1,16 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import { apiFetch } from "../apiFetch";
+import { apiFetchClient } from "../apiFetch";
 import { EduGroup } from "./types";
+import { useEffect, useState } from "react";
 
-export default async function EduGroupsPage() {
-  let groups: EduGroup[] = [];
-
-  try {
-    const data = await apiFetch<EduGroup[]>("/v1/edu-groups");
-    groups = data.response ?? [];
-  } catch (error) {
-    console.error("Error fetching edu groups:", error);
-  } 
+export default function EduGroupsPage() {
+  const [groups, setEduGroups] = useState<EduGroup[]>([])
+      
+    useEffect(() => {
+      async function fetchEduGroups() {
+        try {
+          const data = await apiFetchClient<EduGroup[]>("/v1/edu-groups");
+          setEduGroups(data.response || []);
+        } catch (error) {
+          console.error("Error fetching edu groups:", error);
+        }
+      }
+      fetchEduGroups();
+    }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

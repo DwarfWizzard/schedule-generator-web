@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
-import { apiFetch } from "@/app/apiFetch";
+import { handleApiResponse, formatApiError } from "../../utils/api";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 import { EduGroup } from "@/app/edu-groups/types";
 
 export default function NewSchedule() {
@@ -18,7 +18,7 @@ export default function NewSchedule() {
   useEffect(() => {
     async function fetchEduGroups() {
       try {
-        const data = await apiFetch<EduGroup[]>("/v1/edu-groups");
+        const data = await apiFetchClient<EduGroup[]>("/v1/edu-groups");
         setEduGroups(data.response || []);
       } catch (error) {
         console.error("Error fetching edu groups:", error);
@@ -32,7 +32,7 @@ export default function NewSchedule() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getApiUrl()}/v1/schedules`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +68,7 @@ export default function NewSchedule() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете учебную группу</option>
+            <option value="">Выберите учебную группу</option>
             {eduGroups.map((group) => (
               <option key={group.id} value={group.id}>
                 {group.number} ({group.id})

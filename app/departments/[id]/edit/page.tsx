@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../../utils/api";
+import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { Department } from "../../types";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function EditDepartment() {
   const router = useRouter();
@@ -19,8 +20,7 @@ export default function EditDepartment() {
   useEffect(() => {
     async function fetchDepartment() {
       try {
-        const response = await fetch(`${getApiUrl()}/v1/departments/${id}`);
-        const data = await handleApiResponse<Department>(response);
+        const data = await apiFetchClient<Department>(`/v1/departments/${id}`);
         
         if (data.response) {
           setName(data.response.name || "");
@@ -52,7 +52,7 @@ export default function EditDepartment() {
         body.external_id = externalId;
       }
 
-      const response = await fetch(`${getApiUrl()}/v1/departments/${id}`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/departments/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -135,4 +135,5 @@ export default function EditDepartment() {
     </div>
   );
 }
+
 

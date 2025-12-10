@@ -1,4 +1,4 @@
-import { apiFetch } from "../../apiFetch";
+import { apiFetchServer } from "../../apiFetch";
 import Link from "next/link";
 import { Teacher } from "../types";
 
@@ -7,7 +7,7 @@ export default async function TeacherPage({ params }: { params: Promise<{ id: st
   let teacher: Teacher | null = null;
 
   try {
-    const data = await apiFetch<Teacher>(`/v1/teachers/${id}`);
+    const data = await apiFetchServer<Teacher>(`/v1/teachers/${id}`);
     teacher = data.response ?? null;
   } catch (error) {
     console.error("Error fetching teacher:", error);

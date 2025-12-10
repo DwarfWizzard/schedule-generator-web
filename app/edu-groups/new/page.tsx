@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../utils/api";
+import { handleApiResponse, formatApiError } from "../../utils/api";
 import { EduPlan } from "@/app/edu-plans/types";
-import { apiFetch } from "@/app/apiFetch";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function NewEduGroup() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function NewEduGroup() {
   useEffect(() => {
     async function fetchEduPlans() {
       try {
-        const data = await apiFetch<EduPlan[]>("/v1/edu-plans");
+        const data = await apiFetchClient<EduPlan[]>("/v1/edu-plans");
         setEduPlans(data.response || []);
       } catch (error) {
         console.error("Error fetching edu plans:", error);
@@ -30,7 +30,7 @@ export default function NewEduGroup() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getApiUrl()}/v1/edu-groups`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-groups`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -64,7 +64,7 @@ export default function NewEduGroup() {
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
           >
-            <option value="">Выберете учебный план</option>
+            <option value="">Выберите учебный план</option>
             {eduPlans.map((plan) => (
               <option key={plan.id} value={plan.id}>
                 {plan.direction_name}/{plan.profile || "--"} ({plan.id})

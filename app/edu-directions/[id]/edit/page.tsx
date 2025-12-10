@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { getApiUrl, handleApiResponse, formatApiError } from "../../../utils/api";
+import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { EduDirection } from "../../types";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
 
 export default function EditEduDirection() {
   const router = useRouter();
@@ -18,9 +19,7 @@ export default function EditEduDirection() {
   useEffect(() => {
     async function fetchEduDirection() {
       try {
-        const response = await fetch(`${getApiUrl()}/v1/edu-directions/${id}`);
-        const data = await handleApiResponse<EduDirection>(response);
-        
+        const data = await apiFetchClient<EduDirection>(`/v1/edu-directions/${id}`);  
         if (data.response) {
           setName(data.response.name || "");
         }
@@ -46,7 +45,7 @@ export default function EditEduDirection() {
         body.name = name;
       }
 
-      const response = await fetch(`${getApiUrl()}/v1/edu-directions/${id}`, {
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-directions/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

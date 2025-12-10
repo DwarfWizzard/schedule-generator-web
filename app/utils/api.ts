@@ -1,12 +1,3 @@
-export function getApiUrl(): string {
-  if (typeof window !== "undefined") {
-    // Client-side
-    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-  }
-  // Server-side
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
-}
-
 export interface ApiResponse<T = object> {
   status: number;
   response?: T;
