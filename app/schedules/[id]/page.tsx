@@ -78,7 +78,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
         const items = itemsPerWeekdayAndLessonNumber[weekday]?.[lessonNumber]
         if (row[weekday] && items) {
           items.map((item) => {
-            row[weekday][item.weektype ?? 0].push(item)
+            row[weekday][item.weektype ?? 2].push(item)
           })
         }
       });
@@ -202,6 +202,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                           className="p-0 border border-gray-300 text-gray-500 align-top"
                         >
                           {items.map((itemList, i) => {
+                          
                             let fullSize = false
 
                             let subgroups = maxSubgroups
@@ -214,12 +215,17 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                               
                               printAddWeek = false
                               subgroups = sg
-                            } else if ((itemList.length == 1 && itemList[0].subgroup == 0)) {
-                              fullSize = true
-                              printAddWeek = false
+                            } else if (itemList.length == 1) {
+                              fullSize = itemList[0].subgroup === 0
+                              printAddWeek = itemList[0].weektype !== ScheduleItemWeektype.both
                               subgroups = new Set(itemList.filter(d => d.subgroup !== 0).map(d => d.subgroup)).size + 1
-                            } else if (i != ScheduleItemWeektype.both && (items[i+1].length > 0 && i+1 != ScheduleItemWeektype.both)) {
-                              printAddWeek = true
+                            } else if (itemList.length == 0) {
+                              if (i != 1) {
+                                printAddWeek = items[i+1].length > 0 && i+1 != ScheduleItemWeektype.both
+                              }
+                            } else {
+                              const sg = new Set(itemList.filter(d => d.subgroup !== 0).map(d => d.subgroup)).size
+                              printAddWeek = sg > 0 && i+1 != ScheduleItemWeektype.both
                             }
 
                             if (itemList.length == 0) {
@@ -265,7 +271,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                                       key={`${subgroup}-${i}`}
                                       scheduleId={schedule.id}
                                       item={item ?? null}
-                                      fullSize={subgroups === 0}
+                                      fullSize={fullSize}
                                     />
                                   );
                                 })}

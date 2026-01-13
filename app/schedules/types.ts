@@ -9,14 +9,14 @@ export const scheduleTypeLabels: Record<ScheduleType, string> = {
 };
 
 export enum ScheduleItemWeektype {
-    even = 0,
-    odd = 1,
+    odd = 0,
+    even = 1,
     both = 2
 }
 
 export const scheduleItemWeektypeLabels: Record<ScheduleItemWeektype, string> = {
-  [ScheduleItemWeektype.even]: "четная неделя",
   [ScheduleItemWeektype.odd]:  "нечетная неделя",
+  [ScheduleItemWeektype.even]: "четная неделя",
   [ScheduleItemWeektype.both]: "все недели",
 };
 

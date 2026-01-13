@@ -6,12 +6,12 @@ import DeleteItemButton from "./DeleteItemButton";
 export function ScheduleCell({scheduleId, item, fullSize}: { scheduleId: string; item: ScheduleItem | null; fullSize: boolean}) {
   const getWeekTypeClass = (weektype: ScheduleItemWeektype | undefined): string => {
     if (weektype === undefined) {
-      return 'bg-orange-50 bg-opacity-5';
+      return 'bg-white-50 bg-opacity-5';
     }
 
     switch (weektype) {
       case ScheduleItemWeektype.both:
-        return 'bg-orange-50 bg-opacity-5';
+        return 'bg-white-50 bg-opacity-5';
       case ScheduleItemWeektype.even:
         return 'bg-green-200 bg-opacity-5';
       case ScheduleItemWeektype.odd:
