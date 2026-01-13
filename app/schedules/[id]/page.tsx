@@ -208,13 +208,11 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                             let subgroups = maxSubgroups
 
                             if (i == ScheduleItemWeektype.both) {
-                              const sg = new Set(itemList.filter(d => d.subgroup !== 0).map(d => d.subgroup)).size + 1
-                              if (sg === 1) {
-                                fullSize = true
+                              if (itemList.length === 1) {
+                                fullSize = itemList[0].subgroup === 0
                               }
-                              
+
                               printAddWeek = false
-                              subgroups = sg
                             } else if (itemList.length == 1) {
                               fullSize = itemList[0].subgroup === 0
                               printAddWeek = itemList[0].weektype !== ScheduleItemWeektype.both
@@ -265,6 +263,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                               >
                                 {Array.from({ length: subgroups }, (_, subgroup) => {
                                   const item = itemList.find(i => i.subgroup === subgroup+1);
+                                  console.log(item)
 
                                   return (
                                     <ScheduleCell
