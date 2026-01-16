@@ -33,7 +33,7 @@ export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleI
         <p className="truncate text-gray-400 text-[10px]">{scheduleItemLectureTypeLabels[item.lesson_type]}</p>
         <p className="truncate">{item.discipline}</p>
         <p className="truncate text-gray-400 text-[12px]">ауд. {item.classroom}</p>
-        <p className="truncate text-gray-400 text-[10px]">ауд. {item.teacher_name.replace(/(.+) (.).+ (.).+/, '$1 $2. $3.')}</p>
+        <p className="truncate text-gray-400 text-[10px]">{item.teacher_name.replace(/(.+) (.).+ (.).+/, '$1 $2. $3.')}</p>
 
         <DeleteItemButton
         scheduleId={scheduleId}
@@ -52,7 +52,7 @@ export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleI
               <p className="truncate text-gray-400 text-[10px]">{scheduleItemLectureTypeLabels[item.lesson_type]}</p>
               <p className="truncate">{item.discipline}</p>
               <p className="truncate text-gray-400 text-[10px]">ауд. {item.classroom}</p>
-              <p className="truncate text-gray-400 text-[10px]">ауд. {item.teacher_name.replace(/(.+) (.).+ (.).+/, '$1 $2. $3.')}</p>
+              <p className="truncate text-gray-400 text-[10px]">{item.teacher_name.replace(/(.+) (.).+ (.).+/, '$1 $2. $3.')}</p>
             </>
           ) : (
             <p className="truncate text-[30px]">-</p>
