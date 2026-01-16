@@ -204,6 +204,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                           {items.map((itemList, i) => {
                           
                             let fullSize = false
+                            let fullCell = false
 
                             let subgroups = maxSubgroups
 
@@ -211,6 +212,8 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                               if (itemList.length === 1) {
                                 fullSize = itemList[0].subgroup === 0
                               }
+
+                              fullCell = true
 
                               printAddWeek = false
                             } else if (itemList.length == 1) {
@@ -233,7 +236,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                                     key={`0-${i}`}
                                     className="w-full border text-xs grid place-items-center px-1 py-0.5 truncate h-10"
                                   >
-                                    <p className="truncate">-</p>
+                                    <p className="truncate text-[30px]">-</p>
                                   </div>
                                 );
                               }
@@ -251,6 +254,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                                   scheduleId={schedule.id}
                                   item={item}
                                   fullSize={true}
+                                  fullCell={fullCell}
                                 />
                               );
                             }
@@ -271,6 +275,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
                                       scheduleId={schedule.id}
                                       item={item ?? null}
                                       fullSize={fullSize}
+                                      fullCell={fullCell}
                                     />
                                   );
                                 })}

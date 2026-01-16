@@ -41,6 +41,7 @@ export const scheduleItemLectureTypeLabels: Record<ScheduleItemLectureType, stri
 export interface ScheduleItem {
     discipline: string;
     teacher_id: string;
+    teacher_name: string;
     weekday: string;
     students_count: number;
     date?: Date;
