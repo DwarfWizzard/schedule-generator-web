@@ -33,6 +33,12 @@ export default function Home() {
       color: "bg-red-500 hover:bg-red-600",
     },
     {
+      title: "Кабинеты",
+      description: "Управление кабинетами вуза",
+      href: "/cabinets",
+      color: "bg-teal-500 hover:bg-teal-600",
+    },
+    {
       title: "Расписания",
       description: "Создание расписаний и выгрузка в CSV",
       href: "/schedules",

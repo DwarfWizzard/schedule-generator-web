@@ -2,6 +2,7 @@
 
 import { ScheduleItem, scheduleItemLectureTypeLabels, ScheduleItemWeektype } from "../types";
 import DeleteItemButton from "./DeleteItemButton";
+import EditItemButton from "./EditItemButton";
 
 export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleId: string; item: ScheduleItem | null; fullSize: boolean, fullCell: boolean}) {
   const getWeekTypeClass = (weektype: ScheduleItemWeektype | undefined): string => {
@@ -32,8 +33,13 @@ export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleI
       >
         <p className="truncate text-gray-400 text-[10px]">{scheduleItemLectureTypeLabels[item.lesson_type]}</p>
         <p className="truncate">{item.discipline}</p>
-        <p className="truncate text-gray-400 text-[12px]">ауд. {item.classroom}</p>
+        <p className="truncate text-gray-400 text-[12px]">ауд. {item.cabinet_building}-{item.cabinet_auditorium}</p>
         <p className="truncate text-gray-400 text-[10px]">{item.teacher_name.replace(/(.+) (.).+ (.).+/, '$1 $2. $3.')}</p>
+
+        <EditItemButton
+        scheduleId={scheduleId}
+        item={item}
+        />
 
         <DeleteItemButton
         scheduleId={scheduleId}
@@ -51,7 +57,7 @@ export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleI
             <>
               <p className="truncate text-gray-400 text-[10px]">{scheduleItemLectureTypeLabels[item.lesson_type]}</p>
               <p className="truncate">{item.discipline}</p>
-              <p className="truncate text-gray-400 text-[10px]">ауд. {item.classroom}</p>
+              <p className="truncate text-gray-400 text-[10px]">ауд. {item.cabinet_building}-{item.cabinet_auditorium}</p>
               <p className="truncate text-gray-400 text-[10px]">{item.teacher_name.replace(/(.+) (.).+ (.).+/, '$1 $2. $3.')}</p>
             </>
           ) : (
@@ -63,7 +69,12 @@ export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleI
             scheduleId={scheduleId}
             item={item}
             />
-        )}
+          ) && (
+              <EditItemButton
+              scheduleId={scheduleId}
+              item={item}
+              />
+          )}
         </div>
     );
 }
