@@ -39,6 +39,7 @@ export default function RootLayout({
                 <Link href="/edu-plans" className="hover:text-blue-200 transition">Учебные планы</Link>
                 <Link href="/edu-groups" className="hover:text-blue-200 transition">Группы</Link>
                 <Link href="/teachers" className="hover:text-blue-200 transition">Преподаватели</Link>
+                <Link href="/cabinets" className="hover:text-blue-200 transition">Кабинеты</Link>
                 <Link href="/schedules" className="hover:text-blue-200 transition">Расписания</Link>
               </div>
             </div>

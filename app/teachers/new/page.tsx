@@ -39,9 +39,9 @@ export default function NewTeacher() {
         body: JSON.stringify({
           department_id: departmentId,
           external_id: externalId,
-          name,
-          position,
-          degree,
+          name: name,
+          position: position,
+          degree: degree,
         }),
       });
 

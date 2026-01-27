@@ -50,7 +50,8 @@ export interface ScheduleItem {
     weektype?: ScheduleItemWeektype;
     weeknum?: number;
     lesson_type: ScheduleItemLectureType;
-    classroom: string;
+    cabinet_auditorium: string;
+    cabinet_building: string;
 }
 
 export interface Schedule {
