@@ -65,15 +65,17 @@ export function ScheduleCell({scheduleId, item, fullSize, fullCell}: { scheduleI
           )}
 
           {item && (
+            <>
             <DeleteItemButton
             scheduleId={scheduleId}
             item={item}
             />
-          ) && (
-              <EditItemButton
+            
+            <EditItemButton
               scheduleId={scheduleId}
               item={item}
               />
+            </>
           )}
         </div>
     );
