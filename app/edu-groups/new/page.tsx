@@ -67,7 +67,7 @@ export default function NewEduGroup() {
             <option value="">Выберите учебный план</option>
             {eduPlans.map((plan) => (
               <option key={plan.id} value={plan.id}>
-                {plan.direction_name}/{plan.profile || "--"} ({plan.id})
+                {plan.direction_name}/{plan.profile || "--"} {plan.year} ({plan.id})
               </option>
             ))}
           </select>
