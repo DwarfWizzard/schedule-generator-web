@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { apiFetchClient } from "../apiFetch";
+import { apiFetchClient } from "../lib/apiFetch";
 import { Teacher } from "./types";
 import { useEffect, useState } from "react";
 

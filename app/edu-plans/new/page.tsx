@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { EduDirection } from "@/app/edu-directions/types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function NewEduPlan() {
   const router = useRouter();
@@ -31,7 +30,7 @@ export default function NewEduPlan() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-plans`, {
+      const response = await apiFetchClient(`/v1/edu-plans`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -40,8 +39,6 @@ export default function NewEduPlan() {
           year,
         }),
       });
-
-      await handleApiResponse(response);
 
       router.push("/edu-plans");
       router.refresh();

@@ -1,12 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { handleApiResponse, formatApiError } from "../../../utils/api";
-import { ScheduleItemLectureType, scheduleItemLectureTypeLabels, ScheduleItemWeektype, scheduleItemWeektypeLabels } from "../../types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
-import { Teacher } from "@/app/teachers/types";
 import AddOrEditItemPage from "./AddOrEditPage";
 
 export default function AddScheduleItem() {

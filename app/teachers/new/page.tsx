@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { Department } from "@/app/departments/types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, } from "@/app/lib/apiFetch";
 
 export default function NewTeacher() {
   const router = useRouter();
@@ -33,7 +32,7 @@ export default function NewTeacher() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/teachers`, {
+      const response = await apiFetchClient(`/v1/teachers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -44,8 +43,6 @@ export default function NewTeacher() {
           degree: degree,
         }),
       });
-
-      await handleApiResponse(response);
 
       router.push("/teachers");
       router.refresh();
@@ -154,5 +151,9 @@ export default function NewTeacher() {
       </form>
     </div>
   );
+}
+
+function handleApiResponse(response: Response) {
+  throw new Error("Function not implemented.");
 }
 

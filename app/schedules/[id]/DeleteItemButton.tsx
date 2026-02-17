@@ -1,9 +1,8 @@
 "use client";
 
 import { Trash2 } from "lucide-react";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { ScheduleItem, weekdayLables } from "../types";
-import { getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError } from "@/app/lib/apiFetch";
 
 export default function DeleteItemButton({ scheduleId, item }: { scheduleId: string, item: ScheduleItem }) {
   async function handleDelete() {
@@ -21,15 +20,13 @@ export default function DeleteItemButton({ scheduleId, item }: { scheduleId: str
     ]
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules/${scheduleId}/items`, {
+      const response = await apiFetchClient(`/v1/schedules/${scheduleId}/items`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
       });
-
-      await handleApiResponse(response);
 
       window.location.reload();
     } catch (error) {

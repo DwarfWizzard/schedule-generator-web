@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { Cabinet, CabinetEquipment, CabinetType, cabinetTypeLabels } from "../../types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function EditCabinet() {
   const router = useRouter();
@@ -26,7 +25,7 @@ export default function EditCabinet() {
           setShowEquipment(!!data.response.equipment);
         }
       } catch (error) {
-        alert("Ошибка загрузки данных: " + formatApiError(error));
+        alert("Ошибка: " + formatApiError(error))
         router.push("/cabinets");
       } finally {
         setFetching(false);
@@ -103,17 +102,16 @@ export default function EditCabinet() {
         body.equipment = cabinet.equipment;
       }
 
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/cabinets/${id}`, {
+      const response = await apiFetchClient(`/v1/cabinets/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
 
-      await handleApiResponse(response);
       router.push(`/cabinets/${id}`);
       router.refresh();
     } catch (error) {
-      alert("Ошибка: " + formatApiError(error));
+      console.error("save cabinet error: ", error)
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { getPublicApiBaseUrl } from "@/app/apiFetch";
+import { getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 import { useState } from "react";
 
 export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) {

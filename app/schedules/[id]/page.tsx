@@ -1,4 +1,4 @@
-import { apiFetchServer } from "../../apiFetch";
+import { apiFetchServer } from "../../lib/fetchServer";
 import Link from "next/link";
 import ExportCSVButton from "./ExportCSVButton";
 

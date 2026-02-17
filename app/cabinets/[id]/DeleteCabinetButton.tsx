@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
-import { getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function DeleteCabinetButton({ cabinetId }: { cabinetId: string }) {
   const router = useRouter();
@@ -13,11 +12,9 @@ export default function DeleteCabinetButton({ cabinetId }: { cabinetId: string }
     }
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/cabinets/${cabinetId}`, {
+      const response = await apiFetchClient(`/v1/cabinets/${cabinetId}`, {
         method: "DELETE",
       });
-
-      await handleApiResponse(response);
 
       router.push("/cabinets");
       router.refresh();

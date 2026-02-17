@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 import { EduGroup } from "@/app/edu-groups/types";
 
 export default function NewSchedule() {
@@ -32,7 +31,7 @@ export default function NewSchedule() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules`, {
+      const response = await apiFetchClient(`/v1/schedules`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,8 +41,6 @@ export default function NewSchedule() {
           end_date: endDate,
         }),
       });
-
-      await handleApiResponse(response);
 
       router.push("/schedules");
       router.refresh();

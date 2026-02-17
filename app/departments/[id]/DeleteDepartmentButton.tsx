@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
-import { getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function DeleteDepartmentButton({ departmentId }: { departmentId: string }) {
   const router = useRouter();
@@ -13,11 +12,9 @@ export default function DeleteDepartmentButton({ departmentId }: { departmentId:
     }
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/departments/${departmentId}`, {
+      const response = await apiFetchClient(`/v1/departments/${departmentId}`, {
         method: "DELETE",
       });
-
-      await handleApiResponse(response);
 
       router.push("/departments");
       router.refresh();

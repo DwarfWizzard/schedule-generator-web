@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { Faculty } from "@/app/faculties/types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function NewDepartment() {
   const router = useRouter();
@@ -41,13 +40,11 @@ export default function NewDepartment() {
         body.faculty_id = facultyId;
       }
 
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/departments`, {
+      const response = await apiFetchClient("/v1/departments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
-      await handleApiResponse(response);
 
       router.push("/departments");
       router.refresh();
