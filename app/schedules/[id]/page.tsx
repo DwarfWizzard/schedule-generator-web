@@ -96,6 +96,12 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
           <div className="flex gap-2">
             <ExportCSVButton scheduleId={id} />
             <Link
+              href={`/schedules/${id}/edit`}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition inline-block"
+            >
+              Редактировать
+            </Link>
+            <Link
               href={`/schedules/${id}/add-item`}
               className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
             >

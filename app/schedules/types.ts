@@ -60,7 +60,7 @@ export interface Schedule {
     edu_group_number: string;
     semester: number,
     type: ScheduleType;
-    start_date?: Date;
-    end_date?: Date;
+    start_date?: string;
+    end_date?: string;
     items?: ScheduleItem[]
 }
