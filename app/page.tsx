@@ -46,12 +46,28 @@ export default function Home() {
 
 const sections = [
     {
+      key: 'cabinets',
+      title: "Кабинеты",
+      description: "Управление кабинетами вуза",
+      href: "/cabinets",
+      color: "bg-teal-500 hover:bg-teal-600",
+      protectedByRole: true, // скрывать, если роль != 1
+    },
+    {
+      key: 'users',
+      title: "Пользователи",
+      description: "Пользователи системы",
+      href: "/users",
+      color: "bg-cyan-500 hover:bg-teal-600",
+      protectedByRole: true, // скрывать, если роль != 1
+    },
+    {
       key: 'departments',
       title: "Кафедры",
       description: "Управление кафедрами учебного заведения",
       href: "/departments",
       color: "bg-blue-500 hover:bg-blue-600",
-      protectedByRole: true, // только для роли 1?
+      protectedByRole: false, // только для роли 1?
     },
     {
       key: 'edu-directions',
@@ -84,14 +100,6 @@ const sections = [
       href: "/teachers",
       color: "bg-red-500 hover:bg-red-600",
       protectedByRole: false,
-    },
-    {
-      key: 'cabinets',
-      title: "Кабинеты",
-      description: "Управление кабинетами вуза",
-      href: "/cabinets",
-      color: "bg-teal-500 hover:bg-teal-600",
-      protectedByRole: true, // скрывать, если роль != 1
     },
     {
       key: 'schedules',

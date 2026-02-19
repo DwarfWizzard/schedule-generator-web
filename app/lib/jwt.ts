@@ -2,24 +2,22 @@ export interface JwtPayload {
   exp: number;
   iat: number;
   user_id: string;
+  user_name: string
   user_role: number;
-  // добавь сюда свои кастомные поля, если есть
 }
 
-export function parseJwt(token: string): JwtPayload | null {
-  try {
-    const [, payload] = token.split('.');
-    if (!payload) return null;
+export function parseJwt(token: string) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
 
-    const decoded = JSON.parse(
-      typeof window !== 'undefined'
-        ? atob(payload.replace(/-/g, '+').replace(/_/g, '/'))
-        : Buffer.from(payload, 'base64').toString('utf8')
-    ) as JwtPayload;
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(c =>
+        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      )
+      .join('')
+  );
 
-    return decoded;
-  } catch (e) {
-    console.error('Failed to parse JWT', e);
-    return null;
-  }
+  return JSON.parse(jsonPayload);
 }
