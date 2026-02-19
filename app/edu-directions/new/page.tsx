@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { Department } from "@/app/departments/types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError } from "@/app/lib/apiFetch";
 
 export default function NewEducationDirection() {
   const router = useRouter();
@@ -30,7 +29,7 @@ export default function NewEducationDirection() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-directions`, {
+      const response = await apiFetchClient("/v1/edu-directions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -39,12 +38,10 @@ export default function NewEducationDirection() {
         }),
       });
 
-      await handleApiResponse(response);
-
       router.push("/edu-directions");
       router.refresh();
     } catch (error) {
-      alert("Ошибка: " + formatApiError(error));
+      alert("Ошибка: "+formatApiError(error))
       setLoading(false);
     }
   }

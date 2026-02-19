@@ -2,29 +2,30 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Department } from "@/app/departments/types";
 import { apiFetchClient, formatApiError, } from "@/app/lib/apiFetch";
+import { UserRole, userRolesLabels } from "../types";
+import { Faculty } from "@/app/faculties/types";
 
-export default function NewTeacher() {
+export default function NewUser() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [departmentId, setDepartmentId] = useState("");
-  const [externalId, setExternalId] = useState("");
-  const [position, setPosition] = useState("");
-  const [degree, setDegree] = useState("");
+  const [facultyId, setFacultytId] = useState<string | null>(null);
+  const [username, setUsername] = useState("");
+  const [role, setRole] = useState(UserRole.deputy_dean);
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [departments, setDepartments] = useState<Department[]>([])
+  const [faculties, setFaculties] = useState<Faculty[]>([])
   
   useEffect(() => {
-    async function fetchDepartments() {
+    async function fetchFaculties() {
       try {
-        const data = await apiFetchClient<Department[]>("/v1/departments");
-        setDepartments(data.response || []);
+        const data = await apiFetchClient<Faculty[]>("/v1/faculties");
+        setFaculties(data.response || []);
       } catch (error) {
-        console.error("Error fetching departments:", error);
+        console.error("Error fetching faculties:", error);
       }
     }
-    fetchDepartments();
+    fetchFaculties();
   }, []);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -32,19 +33,19 @@ export default function NewTeacher() {
     setLoading(true);
 
     try {
-      const response = await apiFetchClient(`/v1/teachers`, {
+      const response = await apiFetchClient(`/v1/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          department_id: departmentId,
-          external_id: externalId,
           name: name,
-          position: position,
-          degree: degree,
+          username: username,
+          role: Number(role),
+          faculty_id: facultyId,
+          password: password,
         }),
       });
 
-      router.push("/teachers");
+      router.push("/users");
       router.refresh();
     } catch (error) {
       alert("Ошибка: " + formatApiError(error));
@@ -59,26 +60,7 @@ export default function NewTeacher() {
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            ID кафедры (UUID) <span className="text-red-500">*</span>
-          </label>
-          <select
-            value={departmentId}
-            onChange={(e) => setDepartmentId(e.target.value)}
-            required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
-          >
-            <option value="">Выберите кафедру</option>
-            {departments.map((department) => (
-              <option key={department.id} value={department.id}>
-                {department.name} ({department.id})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            ФИО преподавателя <span className="text-red-500">*</span>
+            Имя пользователя <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -86,49 +68,75 @@ export default function NewTeacher() {
             onChange={(e) => setName(e.target.value)}
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
-            placeholder="Введите ФИО преподавателя"
+            placeholder="Введите имя пользователя"
           />
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Внешний ID <span className="text-red-500">*</span>
+            Роль
+          </label>
+          <select
+            value={role}
+            onChange={(e) => {setRole(Number(e.target.value))}}
+            required
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
+          >
+            <option value="">Выберите роль</option>
+            {(Object.keys(userRolesLabels) as unknown as UserRole[]).map(
+              (key) => (
+                <option key={key} value={key}>
+                  {userRolesLabels[key]}
+                </option>
+              )
+            )}
+          </select>
+        </div>
+
+        
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            ID факультета (UUID) <span className="text-red-500">*</span>
+          </label>
+          <select
+            value={facultyId ?? ""}
+            onChange={(e) => setFacultytId(e.target.value || null)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-transparent text-gray-500"
+          >
+            <option value="">Выберите кафедру</option>
+            {faculties.map((faculty) => (
+              <option key={faculty.id} value={faculty.id}>
+                {faculty.name} ({faculty.id})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Никнейм <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
-            value={externalId}
-            onChange={(e) => setExternalId(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
-            placeholder="Введите внешний идентификатор"
+            placeholder="Введите никнейм для пользователя"
           />
         </div>
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Должность <span className="text-red-500">*</span>
+            Пароль <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
-            value={position}
-            onChange={(e) => setPosition(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
-            placeholder="Введите должность"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Ученая степень <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={degree}
-            onChange={(e) => setDegree(e.target.value)}
-            required
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-500 placeholder-gray-500"
-            placeholder="Введите ученую степень"
+            placeholder="Введите пароль для пользователя (сохраните его отдельно, чтобы не потерять)"
           />
         </div>
 

@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { Faculty } from "@/app/faculties/types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 import { CabinetEquipment, CabinetType, cabinetTypeLabels } from "../types";
 
 export default function Newcabinet() {
@@ -51,7 +50,7 @@ export default function Newcabinet() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/cabinets`, {
+      const response = await apiFetchClient("/v1/cabinets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -64,8 +63,6 @@ export default function Newcabinet() {
           equipment: equipment
         }),
       });
-
-      await handleApiResponse(response);
 
       router.push("/cabinets");
       router.refresh();

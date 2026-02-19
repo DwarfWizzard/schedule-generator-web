@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { Department } from "../../types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function EditDepartment() {
   const router = useRouter();
@@ -52,13 +51,11 @@ export default function EditDepartment() {
         body.external_id = externalId;
       }
 
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/departments/${id}`, {
+      const response = await apiFetchClient(`/v1/departments/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
-      await handleApiResponse(response);
 
       router.push(`/departments/${id}`);
       router.refresh();

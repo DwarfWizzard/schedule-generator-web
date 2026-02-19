@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleApiResponse, formatApiError } from "../../utils/api";
 import { EduPlan } from "@/app/edu-plans/types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
+import { EduGroup } from "../types";
 
 export default function NewEduGroup() {
   const router = useRouter();
@@ -30,7 +30,7 @@ export default function NewEduGroup() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-groups`, {
+      const data = await apiFetchClient<EduGroup[]>("/v1/edu-groups", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,13 +38,10 @@ export default function NewEduGroup() {
           edu_plan_id: eduPlanId,
         }),
       });
-
-      await handleApiResponse(response);
-
       router.push("/edu-groups");
       router.refresh();
     } catch (error) {
-      alert("Ошибка: " + formatApiError(error));
+      console.error("Error saving edu plan:", error);
       setLoading(false);
     }
   }

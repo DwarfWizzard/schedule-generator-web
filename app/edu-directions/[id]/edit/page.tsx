@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
-import { handleApiResponse, formatApiError } from "../../../utils/api";
 import { EduDirection } from "../../types";
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 
 export default function EditEduDirection() {
   const router = useRouter();
@@ -45,13 +44,11 @@ export default function EditEduDirection() {
         body.name = name;
       }
 
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/edu-directions/${id}`, {
+      const response = await apiFetchClient(`/v1/edu-directions/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
-      await handleApiResponse(response);
 
       router.push(`/edu-directions/${id}`);
       router.refresh();

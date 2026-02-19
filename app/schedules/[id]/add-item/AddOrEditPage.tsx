@@ -1,8 +1,7 @@
 "use client";
 
-import { apiFetchClient, getPublicApiBaseUrl } from "@/app/apiFetch";
+import { apiFetchClient, formatApiError, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 import { ScheduleItem, ScheduleItemLectureType, scheduleItemLectureTypeLabels, ScheduleItemWeektype, scheduleItemWeektypeLabels, weekdayLables } from "../../types";
-import { formatApiError, handleApiResponse } from "@/app/utils/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Teacher } from "@/app/teachers/types";
@@ -90,13 +89,11 @@ export default function AddOrEditItemPage({ scheduleId, item, onSuccess, onCance
                     lesson_type: Number(lessontype),
                     cabinet_id: selectedCabinetId,
                 }
-            const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules/${scheduleId}/items`, {
+            const response = await apiFetchClient(`/v1/schedules/${scheduleId}/items`, {
                 method: !item ? "POST" : "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(!item ? [payload] : payload),
             });
-
-            await handleApiResponse(response);
 
             if (onSuccess) {
                 onSuccess()
