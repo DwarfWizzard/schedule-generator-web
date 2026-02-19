@@ -1,6 +1,6 @@
 "use client";
 
-import { getPublicApiBaseUrl } from "@/app/lib/apiFetch";
+import { getAccessToken, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 import { useState } from "react";
 
 export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) {
@@ -11,7 +11,13 @@ export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) 
     setLoading(true);
     try {
       const asCalendar = calendarFormat
-      const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules/${scheduleId}/export?format=csv&as_calendar=${asCalendar}`);
+      const response = await fetch(`${getPublicApiBaseUrl()}/v1/schedules/${scheduleId}/export?format=csv&as_calendar=${asCalendar}`,
+        {
+          headers: {
+            Authorization: `Bearer ${getAccessToken() || ''}`,
+          },
+        }
+      );
       
       if (!response.ok) {
         throw new Error("Ошибка при выгрузке CSV");
