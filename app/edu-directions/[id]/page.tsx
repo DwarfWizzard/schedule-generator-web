@@ -58,12 +58,6 @@ export default async function EducationDirectionPage({ params }: { params: Promi
               <dd className="mt-1 text-sm text-gray-900">{direction.name}</dd>
             </div>
           )}
-          {direction.department_id && (
-            <div>
-              <dt className="text-sm font-medium text-gray-500">Кафедра / ID кафедры</dt>
-              <dd className="mt-1 text-sm text-gray-900">{direction.department_name} / {direction.department_id}</dd>
-            </div>
-          )}
         </dl>
       </div>
     </div>

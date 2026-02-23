@@ -8,20 +8,20 @@ import { useEffect, useState } from "react";
 export default function EduPlansPage() {
   const [plans, setEduPlans] = useState<EduPlan[]>([])
       
-    useEffect(() => {
-      async function fetchEduPlans() {
-        try {
-          const data = await apiFetchClient<EduPlan[]>("/v1/edu-plans");
-          setEduPlans(data.response || []);
-        } catch (error) {
-          console.error("Error fetching edu plans:", error);
-        }
+  useEffect(() => {
+    async function fetchEduPlans() {
+      try {
+        const data = await apiFetchClient<EduPlan[]>("/v1/edu-plans");
+        setEduPlans(data.response || []);
+      } catch (error) {
+        console.error("Error fetching edu plans:", error);
       }
-      fetchEduPlans();
-    }, []);
+    }
+    fetchEduPlans();
+  }, []);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 relative">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-500">Учебные планы</h1>
         <Link
@@ -35,13 +35,10 @@ export default function EduPlansPage() {
       {plans.length === 0 ? (
         <p className="text-gray-500">Учебные планы не найдены</p>
       ) : (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="overflow-x-auto bg-white rounded-lg shadow">
           <table className="w-full">
             <thead className="bg-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ID
-                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Профиль
                 </th>
@@ -52,6 +49,9 @@ export default function EduPlansPage() {
                   Направление подготовки
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Кафедра
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Действия
                 </th>
               </tr>
@@ -60,9 +60,6 @@ export default function EduPlansPage() {
               {plans.map((plan) => (
                 <tr key={plan.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {plan.id || "—"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {plan.profile || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -70,6 +67,9 @@ export default function EduPlansPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={plan.direction_id}>
                     {plan.direction_name || "—"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={plan.department_id}>
+                    {plan.department_name || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link

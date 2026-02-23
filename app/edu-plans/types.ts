@@ -2,6 +2,8 @@ export interface EduPlan {
   id: string;
   direction_id: string;
   direction_name: string;
+  department_id: string;
+  department_name: string;
   profile: string;
   year: number;
   modules?: any[]; // Пока не интегрируем

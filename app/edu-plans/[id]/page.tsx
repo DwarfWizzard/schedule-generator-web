@@ -37,6 +37,12 @@ export default async function EduPlanPage({ params }: { params: Promise<{ id: st
       </div>
 
       <div className="mb-4">
+        <Link
+          href={`/edu-plans/${id}/edit`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition inline-block"
+        >
+          Редактировать
+        </Link>
         <DeleteEduPlanButton eduPlanId={id} />
       </div>
 
@@ -62,6 +68,12 @@ export default async function EduPlanPage({ params }: { params: Promise<{ id: st
             <div>
               <dt className="text-sm font-medium text-gray-500">Направление / ID направления</dt>
               <dd className="mt-1 text-sm text-gray-900">{plan.direction_name} / {plan.direction_id}</dd>
+            </div>
+          )}
+          {plan.department_id && (
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Кафедра / ID кафедры</dt>
+              <dd className="mt-1 text-sm text-gray-900">{plan.department_name} / {plan.department_id}</dd>
             </div>
           )}
         </dl>
