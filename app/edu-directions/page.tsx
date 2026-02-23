@@ -8,17 +8,17 @@ import { useEffect, useState } from "react";
 export default function EducationDirectionsPage() {
   const [directions, setEduDirections] = useState<EduDirection[]>([])
     
-    useEffect(() => {
-      async function fetchEduDirections() {
-        try {
-          const data = await apiFetchClient<EduDirection[]>("/v1/edu-directions");
-          setEduDirections(data.response || []);
-        } catch (error) {
-          console.error("Error fetching edu directions:", error);
-        }
+  useEffect(() => {
+    async function fetchEduDirections() {
+      try {
+        const data = await apiFetchClient<EduDirection[]>("/v1/edu-directions");
+        setEduDirections(data.response || []);
+      } catch (error) {
+        console.error("Error fetching edu directions:", error);
       }
-      fetchEduDirections();
-    }, []);
+    }
+    fetchEduDirections();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -61,9 +61,6 @@ export default function EducationDirectionsPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {dir.name || "—"}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={dir.department_id}>
-                    {dir.department_name || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link

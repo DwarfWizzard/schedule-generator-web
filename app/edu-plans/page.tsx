@@ -8,17 +8,17 @@ import { useEffect, useState } from "react";
 export default function EduPlansPage() {
   const [plans, setEduPlans] = useState<EduPlan[]>([])
       
-    useEffect(() => {
-      async function fetchEduPlans() {
-        try {
-          const data = await apiFetchClient<EduPlan[]>("/v1/edu-plans");
-          setEduPlans(data.response || []);
-        } catch (error) {
-          console.error("Error fetching edu plans:", error);
-        }
+  useEffect(() => {
+    async function fetchEduPlans() {
+      try {
+        const data = await apiFetchClient<EduPlan[]>("/v1/edu-plans");
+        setEduPlans(data.response || []);
+      } catch (error) {
+        console.error("Error fetching edu plans:", error);
       }
-      fetchEduPlans();
-    }, []);
+    }
+    fetchEduPlans();
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -52,6 +52,9 @@ export default function EduPlansPage() {
                   Направление подготовки
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Кафедра
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Действия
                 </th>
               </tr>
@@ -70,6 +73,9 @@ export default function EduPlansPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={plan.direction_id}>
                     {plan.direction_name || "—"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900" title={plan.department_id}>
+                    {plan.department_name || "—"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link
