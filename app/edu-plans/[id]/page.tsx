@@ -37,6 +37,12 @@ export default async function EduPlanPage({ params }: { params: Promise<{ id: st
       </div>
 
       <div className="mb-4">
+        <Link
+          href={`/edu-plans/${id}/edit`}
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition inline-block"
+        >
+          Редактировать
+        </Link>
         <DeleteEduPlanButton eduPlanId={id} />
       </div>
 

@@ -91,7 +91,7 @@ export default function EditEduPlan() {
       }
 
       const response = await apiFetchClient(`/v1/edu-plans/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
@@ -119,9 +119,9 @@ export default function EditEduPlan() {
           href={`/edu-plans/${id}`}
           className="text-blue-600 hover:underline mb-4 inline-block"
         >
-          ← Назад к направлению
+          ← Назад к учебному плану
         </Link>
-        <h1 className="text-3xl font-bold text-gray-500">Редактировать направление подготовки</h1>
+        <h1 className="text-3xl font-bold text-gray-500">Редактировать учебный план</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6">
