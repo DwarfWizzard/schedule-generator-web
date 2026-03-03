@@ -51,7 +51,7 @@ export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) 
         throw new Error("Ошибка при выгрузке CSV");
       }
 
-      const contentDisposition = response.headers.get('content-disposition') || '';
+      const contentDisposition = response.headers.get('Content-Disposition') || '';
       console.log(contentDisposition)
       const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
       console.log(filenameMatch)
