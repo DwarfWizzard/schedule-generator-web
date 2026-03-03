@@ -50,11 +50,15 @@ export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) 
         throw new Error("Ошибка при выгрузке CSV");
       }
 
+      const contentDisposition = response.headers.get('content-disposition') || '';
+      const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      const filename = filenameMatch?.[1]?.replace(/['"]/g, '') || `schedule-${scheduleId}.csv`;
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `schedule-${scheduleId}.csv`;
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
