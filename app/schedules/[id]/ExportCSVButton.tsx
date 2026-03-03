@@ -3,6 +3,7 @@
 import { getAccessToken, getPublicApiBaseUrl } from "@/app/lib/apiFetch";
 import { JwtPayload } from "@/app/lib/jwt";
 import { UserRole } from "@/app/users/types";
+import { log } from "console";
 import router from "next/router";
 import { useEffect, useState } from "react";
 
@@ -51,8 +52,11 @@ export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) 
       }
 
       const contentDisposition = response.headers.get('content-disposition') || '';
+      console.log(contentDisposition)
       const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      console.log(filenameMatch)
       const filename = filenameMatch?.toString() ||`schedule-${scheduleId}.csv`;
+      console.log(filename)
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
