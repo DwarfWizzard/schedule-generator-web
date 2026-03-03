@@ -55,7 +55,7 @@ export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) 
       console.log(contentDisposition)
       const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
       console.log(filenameMatch)
-      const filename = filenameMatch?.toString() ||`schedule-${scheduleId}.csv`;
+      const filename = filenameMatch?.[1]?.replace(/['"]/g, '') ||`schedule-${scheduleId}.csv`;
       console.log(filename)
 
       const blob = await response.blob();
