@@ -52,7 +52,7 @@ export default function ExportCSVButton({ scheduleId }: { scheduleId: string }) 
 
       const contentDisposition = response.headers.get('content-disposition') || '';
       const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-      const filename = filenameMatch?.[1]?.replace(/['"]/g, '') || `schedule-${scheduleId}.csv`;
+      const filename = filenameMatch?.toString() ||`schedule-${scheduleId}.csv`;
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
