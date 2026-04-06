@@ -1,32 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { MainNav } from "./components/MainNav"; // путь подправь если нужно
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { MainNav } from "./components/MainNav";
 
 export const metadata: Metadata = {
   title: "Система управления расписаниями",
   description: "Веб-интерфейс для управления расписаниями учебного заведения",
 };
 
-// ✅ ДОЛЖЕН БЫТЬ DEFAULT EXPORT ФУНКЦИЕЙ
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="ru">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <MainNav />
         <main className="min-h-screen bg-gray-50">{children}</main>
       </body>

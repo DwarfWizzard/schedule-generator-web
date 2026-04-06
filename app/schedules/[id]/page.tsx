@@ -62,6 +62,8 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
     })
   }
 
+  console.log(schedule.practices)
+
   const columns = ["Номер пары", ...Object.keys(weekdayLabels)];
 
   const table = Array.from({ length: 7 }, (_, index) => {
@@ -100,6 +102,12 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition inline-block"
             >
               Редактировать
+            </Link>
+            <Link
+              href={`/schedules/${id}/add-practice`}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
+            >
+              Добавить практику
             </Link>
             <Link
               href={`/schedules/${id}/add-item`}
@@ -148,6 +156,60 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
             </div>
           )}
         </dl>
+        {schedule.practices && schedule.practices.length > 0 && (
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+              Практики
+            </h3>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                      Вид практики
+                    </th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                      Начало
+                    </th>
+                    <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
+                      Окончание
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="divide-y divide-gray-200">
+                  {schedule.practices.map((practice, idx) => (
+                    <tr key={idx} className="bg-white group">
+                      <td className="px-4 py-2 text-sm text-gray-900 relative">
+                        {schedulePracticeTypeLables[practice.practice_type]}
+                      </td>
+
+                      <td className="px-4 py-2 text-sm text-gray-900 relative">
+                        {new Date(practice.start_date + "T00:00:00").toLocaleDateString("ru-RU")}
+                      </td>
+
+                      <td className="px-4 py-2 text-sm text-gray-900 relative">
+                        {new Date(practice.end_date + "T00:00:00").toLocaleDateString("ru-RU")}
+
+                        <DeletePracticeButton
+                          scheduleId={schedule.id}
+                          practice={practice}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {schedule.practices.length > 3 && (
+              <div className="mt-2 text-sm text-gray-500">
+                Показаны первые 3 практики из {schedule.practices.length}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <h2 className="text-xl font-semibold mb-4 text-gray-500">Список занятий</h2>
@@ -303,6 +365,7 @@ export default async function SchedulePage({ params }: { params: Promise<{ id: s
   );
 }
 
-import { Schedule, ScheduleItem, ScheduleItemWeektype, ScheduleType, scheduleTypeLabels } from "../types";import { EduGroup } from "@/app/edu-groups/types";
+import { Schedule, ScheduleItem, ScheduleItemWeektype, schedulePracticeTypeLables, ScheduleType, scheduleTypeLabels } from "../types";import { EduGroup } from "@/app/edu-groups/types";
 import { ScheduleCell } from "./ScheduleCell";
+import DeletePracticeButton from "./DeletePracticeButton";
 

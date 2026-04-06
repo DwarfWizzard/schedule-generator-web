@@ -54,6 +54,24 @@ export interface ScheduleItem {
     cabinet_building: string;
 }
 
+export enum SchedulePracticeType {
+    educational = 0,
+    industrial = 1,
+    diploma = 2,
+};
+
+export const schedulePracticeTypeLables: Record<SchedulePracticeType, string> = {
+    [SchedulePracticeType.educational]: "учебная практика",
+    [SchedulePracticeType.industrial]: "производственная практика",
+    [SchedulePracticeType.diploma]: "преддипломная практика",
+};
+
+export interface SchedulePractice {
+    practice_type: SchedulePracticeType;
+    start_date: string;
+    end_date: string;
+};
+
 export interface Schedule {
     id: string;
     edu_group_id: string;
@@ -63,4 +81,5 @@ export interface Schedule {
     start_date?: string;
     end_date?: string;
     items?: ScheduleItem[]
+    practices?: SchedulePractice[]
 }
