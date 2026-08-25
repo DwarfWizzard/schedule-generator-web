@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
-import { apiFetchClient } from "../lib/apiFetch";
-import { Cabinet, cabinetTypeLabels } from "./types";
+import { apiFetchClient } from "../../lib/apiFetch";
+import { Cabinet, cabinetTypeLabels } from "./../types";
 import { useEffect, useState } from "react";
 
 export default function CabinetsPage() {
@@ -24,13 +24,6 @@ export default function CabinetsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-500">Кабинеты</h1>
-        <Link
-          href="/cabinets/new"
-          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
-        >
-          Добавить кабинет
-        </Link>
-
         <div className="flex gap-2">
           {/* Кнопка перехода к загруженности аудиторий */}
           <Link
@@ -49,6 +42,9 @@ export default function CabinetsPage() {
       </div>
 
       {cabinets.length === 0 ? (
+
+
+
         <p className="text-gray-500">Кабинеты не найдены</p>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -96,6 +92,9 @@ export default function CabinetsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {cabinet.appointment || "—"}
+
+
+
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {cabinet.equipment ? (
@@ -135,4 +134,3 @@ export default function CabinetsPage() {
     </div>
   );
 }
-

@@ -57,11 +57,17 @@ export function MainNav() {
             <Link href="/" className="hover:text-blue-200 transition">
               Главная
             </Link>
+            {/* Загруженность - ВНЕ проверки isAdmin */}
+            <Link href="/cabinets/workload">Загруженность</Link>
             {isAdmin && (
               <>
                 <Link href="/cabinets" className="hover:text-blue-200 transition">
                   Кабинеты
                 </Link>
+                {/* Загруженность аудиторий — отдельный пункт для быстрого доступа */}
+                {/*<Link href="/cabinets/workload" className="hover:text-blue-200 transition">
+                Загруженность
+                </Link>*/}
                 <Link href="/users" className="hover:text-blue-200 transition">
                   Пользователи
                 </Link>
