@@ -109,6 +109,14 @@ const sections = [
       color: "bg-indigo-500 hover:bg-indigo-600",
       protectedByRole: false,
     },
+    {
+      key: 'auditoriums',
+      title: "Загруженность аудиторий",
+      description: "Сетка занятости аудиторий по корпусам и дням",
+      href: "/auditoriums",
+      color: "bg-amber-500 hover:bg-amber-600",
+      protectedByRole: false,
+    },
   ];
 
   const visibleSections = sections.filter((section) => {
