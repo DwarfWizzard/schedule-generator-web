@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Загруженность аудиторий</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ══════════════════════════════════════
+       ТЁМНАЯ ТЕМА (по умолчанию)
+    ══════════════════════════════════════ */
+    :root {
+      --bg:         #0f1117;
+      --surface:    #181c27;
+      --surface2:   #1f2435;
+      --border:     #2a3050;
+      --accent:     #4f8ef7;
+      --text:       #e2e8f8;
+      --text-muted: #8892aa;
+
+      --free-bg:     #0d2a1a;
+      --free-border: #1a4d2e;
+      --free-text:   #4ade80;
+      --free-num:    #22c55e;
+
+      --lecture:    #a78bfa;
+      --practice:   #60a5fa;
+      --seminar:    #34d399;
+      --exam:       #f87171;
+      --laboratory: #fb923c;
+
+      --badge-lecture-bg:    #2d1f5e;
+      --badge-practice-bg:   #1a3055;
+      --badge-seminar-bg:    #0d3025;
+      --badge-exam-bg:       #3b1212;
+      --badge-laboratory-bg: #3b1e0a;
+
+      --odd-badge:  #1e3a5f; --odd-text:  #93c5fd;
+      --even-badge: #14432a; --even-text: #6ee7b7;
+      --both-badge: #252a3a; --both-text: #94a3b8;
+
+      --theme-icon-show: "☀️";
+    }
+
+    /* ══════════════════════════════════════
+       СВЕТЛАЯ ТЕМА
+    ══════════════════════════════════════ */
+    [data-theme="light"] {
+      --bg:         #f0f2f7;
+      --surface:    #ffffff;
+      --surface2:   #e8ecf4;
+      --border:     #cbd5e8;
+      --accent:     #2563eb;
+      --text:       #1e2235;
+      --text-muted: #64748b;
+
+      --free-bg:     #f0fdf4;
+      --free-border: #86efac;
+      --free-text:   #15803d;
+      --free-num:    #16a34a;
+
+      --lecture:    #7c3aed;
+      --practice:   #1d4ed8;
+      --seminar:    #065f46;
+      --exam:       #b91c1c;
+      --laboratory: #c2410c;
+
+      --badge-lecture-bg:    #ede9fe;
+      --badge-practice-bg:   #dbeafe;
+      --badge-seminar-bg:    #d1fae5;
+      --badge-exam-bg:       #fee2e2;
+      --badge-laboratory-bg: #ffedd5;
+
+      --odd-badge:  #dbeafe; --odd-text:  #1e40af;
+      --even-badge: #d1fae5; --even-text: #065f46;
+      --both-badge: #f1f5f9; --both-text: #475569;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      min-height: 100vh;
+      transition: background .25s, color .25s;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background .25s, border-color .25s;
+    }
+    header h1 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    header .subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* ── Theme switch ── */
+    .theme-switch-wrap {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .theme-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      user-select: none;
+    }
+    /* Красивый переключатель */
+    .theme-toggle {
+      position: relative;
+      width: 52px;
+      height: 26px;
+      cursor: pointer;
+    }
+    .theme-toggle input { display: none; }
+    .theme-toggle-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 13px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      transition: background .25s, border-color .25s;
+      overflow: hidden;
+    }
+    /* Звёздочки в тёмном режиме */
+    .theme-toggle-track::before {
+      content: '✦ ✦';
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 7px;
+      color: #8892aa;
+      letter-spacing: 2px;
+      transition: opacity .2s;
+    }
+    /* Солнце в светлом режиме */
+    .theme-toggle-track::after {
+      content: '☀';
+      position: absolute;
+      left: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    [data-theme="light"] .theme-toggle-track::before { opacity: 0; }
+    [data-theme="light"] .theme-toggle-track::after  { opacity: 1; }
+
+    .theme-toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #60a5fa, #4f8ef7);
+      box-shadow: 0 1px 4px rgba(0,0,0,.4);
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), background .25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .theme-toggle input:checked ~ .theme-toggle-thumb {
+      transform: translateX(26px);
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+
+    /* ── Config bar ── */
+    #config-bar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 9px 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      transition: background .25s, border-color .25s;
+    }
+    #config-bar label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    #api-url {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      min-width: 220px;
+      flex: 1;
+      outline: none;
+      transition: border-color .2s, background .25s, color .25s;
+    }
+    #api-url:focus { border-color: var(--accent); }
+    #load-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 7px 20px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    #load-btn:hover { opacity: 0.85; }
+    #load-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Filters ── */
+    #filters {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 9px 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      transition: background .25s, border-color .25s;
+    }
+    #filters label {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    #filters select, #filters input[type="text"] {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+      transition: background .25s, color .25s, border-color .2s;
+    }
+    #filters select:focus,
+    #filters input[type="text"]:focus { border-color: var(--accent); }
+    #search-room { min-width: 150px; }
+
+    /* Разделитель в фильтрах */
+    .filter-sep {
+      width: 1px;
+      height: 22px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    /* ── Чёт/нечёт toggle ── */
+    .week-parity-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 2px;
+      transition: background .25s, border-color .25s;
+    }
+    .parity-btn {
+      padding: 4px 12px;
+      border-radius: 5px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      transition: background .2s, color .2s;
+    }
+    .parity-btn.active-odd {
+      background: var(--odd-badge);
+      color: var(--odd-text);
+    }
+    .parity-btn.active-even {
+      background: var(--even-badge);
+      color: var(--even-text);
+    }
+    .parity-divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      margin: 0 1px;
+    }
+
+    /* ── Status ── */
+    #status {
+      padding: 10px 28px;
+      font-size: 13px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+      min-height: 36px;
+    }
+    #status.error   { color: var(--exam); }
+    #status.loading { color: var(--accent); }
+    .spinner {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Main ── */
+    main { padding: 22px 28px; }
+
+    /* ── Building section ── */
+    .building-section {
+      margin-bottom: 38px;
+      animation: fadeIn .3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; } }
+
+    .building-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .building-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+    .building-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .building-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--surface2);
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .building-divider { flex: 1; height: 1px; background: var(--border); }
+
+    /* ── Room grid ── */
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 13px;
+    }
+
+    /* ── Room card ── */
+    .room-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: border-color .2s, background .25s;
+    }
+    .room-card:hover { border-color: var(--accent); }
+
+    .room-card-header {
+      background: var(--surface2);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      transition: background .25s, border-color .25s;
+    }
+    .room-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .room-total {
+      margin-left: auto;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ── Week-day tabs ── */
+    .week-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      transition: border-color .25s;
+    }
+    .week-tab {
+      flex: 1;
+      padding: 6px 0;
+      text-align: center;
+      font-size: 11px;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color .15s, border-color .15s;
+      user-select: none;
+    }
+    .week-tab:hover { color: var(--text); }
+    .week-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    /* Маленькая зелёная точка на вкладке если день полностью свободен */
+    .week-tab.free-day { color: var(--free-num); }
+    .week-tab.free-day.active { border-bottom-color: var(--free-num); }
+
+    /* ── Day body ── */
+    .room-body { padding: 8px 14px; min-height: 60px; }
+    .day-row { display: none; flex-direction: column; }
+    .day-row.visible { display: flex; }
+
+    /* ── Занятая пара ── */
+    .lesson-row {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 6px;
+      align-items: start;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      transition: border-color .25s;
+    }
+    .lesson-row:last-child { border-bottom: none; }
+
+    .lesson-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 2px;
+    }
+    .lesson-discipline {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .lesson-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 3px;
+    }
+    .lesson-teacher {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .lesson-group {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* ── Свободная пара (gap) ── */
+    .free-row {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 6px;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--free-border);
+      background: var(--free-bg);
+      border-radius: 4px;
+      margin: 2px 0;
+      padding-left: 6px;
+      padding-right: 6px;
+      transition: background .25s, border-color .25s;
+    }
+    .free-row:last-child { border-bottom: none; }
+    .free-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--free-num);
+      font-weight: 600;
+    }
+    .free-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--free-text);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .free-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--free-num);
+      display: inline-block;
+      box-shadow: 0 0 4px var(--free-num);
+    }
+
+    /* ── Полностью свободный день ── */
+    .free-day-block {
+      background: var(--free-bg);
+      border: 1px solid var(--free-border);
+      border-radius: 6px;
+      padding: 12px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0;
+      transition: background .25s, border-color .25s;
+    }
+    .free-day-icon {
+      font-size: 14px;
+    }
+    .free-day-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 12px;
+      color: var(--free-text);
+    }
+
+    /* ── Badges ── */
+    .badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .badge-type-lecture    { color: var(--lecture);    background: var(--badge-lecture-bg); }
+    .badge-type-practice   { color: var(--practice);   background: var(--badge-practice-bg); }
+    .badge-type-seminar    { color: var(--seminar);     background: var(--badge-seminar-bg); }
+    .badge-type-exam       { color: var(--exam);        background: var(--badge-exam-bg); }
+    .badge-type-laboratory { color: var(--laboratory);  background: var(--badge-laboratory-bg); }
+    .badge-week-odd  { color: var(--odd-text);  background: var(--odd-badge); }
+    .badge-week-even { color: var(--even-text); background: var(--even-badge); }
+    .badge-week-both { color: var(--both-text); background: var(--both-badge); }
+
+    /* ── Empty state ── */
+    #empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 12px;
+      color: var(--text-muted);
+    }
+    #empty-state svg { opacity: 0.22; }
+    #empty-state p { font-size: 14px; font-family: 'IBM Plex Mono', monospace; }
+  </style>
+</head>
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <header>
+    <h1>Загруженность аудиторий</h1>
+    <span class="subtitle">GET /v1/cabinets/workload</span>
+
+    <!-- Переключатель темы -->
+    <div class="theme-switch-wrap">
+      <span class="theme-label" id="theme-label">тёмная</span>
+      <label class="theme-toggle" title="Переключить тему">
+        <input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this.checked)" />
+        <div class="theme-toggle-track"></div>
+        <div class="theme-toggle-thumb">🌙</div>
+      </label>
+    </div>
+  </header>
+
+  <!-- ══ CONFIG BAR ══ -->
+  <div id="config-bar">
+    <label>API URL:</label>
+    <input id="api-url" type="text" value="http://localhost:8008" placeholder="http://localhost:8008" />
+    <button id="load-btn" onclick="loadWorkload()">Загрузить</button>
+  </div>
+
+  <!-- ══ FILTERS ══ -->
+  <div id="filters" style="display:none">
+    <label>Корпус:</label>
+    <select id="filter-building" onchange="render()">
+      <option value="">Все</option>
+    </select>
+
+    <label style="margin-left:6px">День:</label>
+    <select id="filter-day" onchange="render()">
+      <option value="">Все</option>
+      <option value="monday">Пн</option>
+      <option value="tuesday">Вт</option>
+      <option value="wednesday">Ср</option>
+      <option value="thursday">Чт</option>
+      <option value="friday">Пт</option>
+      <option value="saturday">Сб</option>
+    </select>
+
+    <div class="filter-sep"></div>
+
+    <!-- Чёт / нечёт / все -->
+    <label>Неделя:</label>
+
+    <div class="week-parity-wrap">
+      <button class="parity-btn" id="btn-odd"  onclick="setParity('odd')" >нечёт</button>
+      <div class="parity-divider"></div>
+      <button class="parity-btn" id="btn-both" onclick="setParity('both')">все</button>
+      <div class="parity-divider"></div>
+      <button class="parity-btn active-even" id="btn-even" onclick="setParity('even')">чёт</button>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <label>Поиск:</label>
+    <input id="search-room" type="text" placeholder="напр. 101" oninput="render()" />
+  </div>
+
+  <div id="status"></div>
+  <main id="main"></main>
+
+<script>
+/* ══════════════════════════════════════════════════
+   КОНСТАНТЫ
+══════════════════════════════════════════════════ */
+const WEEKDAYS       = ["monday","tuesday","wednesday","thursday","friday","saturday"];
+const WEEKDAY_LABELS = { monday:"Пн", tuesday:"Вт", wednesday:"Ср", thursday:"Чт", friday:"Пт", saturday:"Сб" };
+
+// Максимальный номер пары в расписании
+// (всё что между 1 и max, но отсутствует — свободно)
+const MAX_LESSON = 6;
+
+const WEEKTYPE_CFG = {
+  odd:  { label:"нечётная", cls:"badge-week-odd"  },
+  even: { label:"чётная",   cls:"badge-week-even" },
+  both: { label:"все",      cls:"badge-week-both" },
+};
+const LESSON_TYPE_CFG = {
+  lecture:    { label:"лекция",      cls:"badge-type-lecture"    },
+  practice:   { label:"практика",    cls:"badge-type-practice"   },
+  seminar:    { label:"семинар",     cls:"badge-type-seminar"    },
+  exam:       { label:"экзамен",     cls:"badge-type-exam"       },
+  laboratory: { label:"лаборатория", cls:"badge-type-laboratory" },
+};
+
+let workloadData = null; // WorkloadResponse от бэка
+let currentParity = 'even'; // 'odd' | 'even' | 'both'
+
+/* ══════════════════════════════════════════════════
+   ТЕМА
+══════════════════════════════════════════════════ */
+function toggleTheme(isLight) {
+  // isLight = true → светлая, false → тёмная
+  document.documentElement.setAttribute('data-theme', isLight ? 'light' : 'dark');
+  const label = document.getElementById('theme-label');
+  const thumb = document.querySelector('.theme-toggle-thumb');
+  if (isLight) {
+    label.textContent = 'светлая';
+    thumb.textContent = '☀️';
+  } else {
+    label.textContent = 'тёмная';
+    thumb.textContent = '🌙';
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   ЧЁТ / НЕЧЁТ
+══════════════════════════════════════════════════ */
+function setParity(val) {
+  currentParity = val;
+  // Сбрасываем все кнопки
+  document.getElementById('btn-odd').className  = 'parity-btn';
+  document.getElementById('btn-even').className = 'parity-btn';
+  document.getElementById('btn-both').className = 'parity-btn';
+  // Подсвечиваем активную
+  if (val === 'odd')  document.getElementById('btn-odd').className  = 'parity-btn active-odd';
+  if (val === 'even') document.getElementById('btn-even').className = 'parity-btn active-even';
+  if (val === 'both') document.getElementById('btn-both').className = 'parity-btn badge-week-both';
+  render();
+}
+
+// Проверяет, нужно ли показывать занятие с учётом выбранной чётности недели
+// both → показываем всегда
+// odd  → показываем odd + both
+// even → показываем even + both
+function lessonMatchesParity(weektype) {
+  if (currentParity === 'both') return true;
+  return weektype === currentParity || weektype === 'both';
+}
+
+/* ══════════════════════════════════════════════════
+   СТАТУС / СОСТОЯНИЯ
+══════════════════════════════════════════════════ */
+function setStatus(msg, type = '') {
+  const el = document.getElementById('status');
+  el.className = type;
+  el.innerHTML = type === 'loading'
+    ? `<span class="spinner"></span>${msg}`
+    : msg;
+}
+
+function showEmptyState() {
+  document.getElementById('main').innerHTML = `
+    <div id="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+      </svg>
+      <p>Введите URL и нажмите «Загрузить»</p>
+    </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════════
+   ЗАГРУЗКА ДАННЫХ
+══════════════════════════════════════════════════ */
+async function loadWorkload() {
+  const base = document.getElementById('api-url').value.trim().replace(/\/$/, '');
+  const btn  = document.getElementById('load-btn');
+  btn.disabled = true;
+  setStatus('Загрузка...', 'loading');
+  document.getElementById('main').innerHTML = '';
+  document.getElementById('filters').style.display = 'none';
+
+  try {
+    const res  = await fetch(`${base}/v1/cabinets/workload`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    const json = await res.json();
+    // Поддерживаем { status, response: {...} } и прямой объект
+    workloadData = json.response?.cabinet_workload_final_output ?? json;
+    setStatus(`Загружено корпусов: ${Object.keys(workloadData).length}`, '');
+    populateBuildingFilter();
+    document.getElementById('filters').style.display = 'flex';
+    render();
+  } catch (e) {
+    setStatus(`Ошибка: ${e.message}`, 'error');
+    showEmptyState();
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function populateBuildingFilter() {
+  const sel = document.getElementById('filter-building');
+  sel.innerHTML = '<option value="">Все</option>';
+  Object.keys(workloadData).sort().forEach(b => {
+    const o = document.createElement('option');
+    o.value = b; o.textContent = b;
+    sel.appendChild(o);
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   ОТРИСОВКА
+══════════════════════════════════════════════════ */
+function render() {
+  if (!workloadData) { showEmptyState(); return; }
+
+  const filterBuilding = document.getElementById('filter-building').value;
+  const filterDay      = document.getElementById('filter-day').value;
+  const searchRoom     = document.getElementById('search-room').value.trim().toLowerCase();
+  const main           = document.getElementById('main');
+  main.innerHTML = '';
+
+  const buildings = filterBuilding
+    ? { [filterBuilding]: workloadData[filterBuilding] }
+    : workloadData;
+
+  let totalRooms = 0;
+
+  Object.entries(buildings)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .forEach(([building, rooms]) => {
+      let roomEntries = Object.entries(rooms);
+      if (searchRoom) roomEntries = roomEntries.filter(([r]) => r.toLowerCase().includes(searchRoom));
+      if (!roomEntries.length) return;
+      totalRooms += roomEntries.length;
+
+      const section = document.createElement('div');
+      section.className = 'building-section';
+      section.innerHTML = `
+        <div class="building-header">
+          <span class="building-label">Корпус</span>
+          <span class="building-name">${esc(building)}</span>
+          <span class="building-count">${roomEntries.length} ауд.</span>
+          <div class="building-divider"></div>
+        </div>
+        <div class="room-grid"></div>
+      `;
+      main.appendChild(section);
+      const grid = section.querySelector('.room-grid');
+
+      roomEntries
+        .sort(([a], [b]) => a.localeCompare(b, 'ru', { numeric: true }))
+        .forEach(([room, daySchedule]) => {
+          grid.appendChild(buildRoomCard(room, daySchedule, filterDay));
+        });
+    });
+
+  if (totalRooms === 0) {
+    main.innerHTML = `
+      <div style="padding:60px;text-align:center;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;font-size:13px">
+        Нет данных по заданным фильтрам
+      </div>`;
+  }
+}
+
+/* ── Карточка аудитории ── */
+function buildRoomCard(room, daySchedule, filterDay) {
+  // Считаем только те занятия, которые видимы при текущей чётности
+  let total = 0;
+  WEEKDAYS.forEach(d => {
+    if (daySchedule[d]) {
+      total += daySchedule[d].filter(l => lessonMatchesParity(l.weektype)).length;
+    }
+  });
+
+  const card = document.createElement('div');
+  card.className = 'room-card';
+  card.innerHTML = `
+    <div class="room-card-header">
+      <span class="room-num">ауд. ${esc(room)}</span>
+      <span class="room-total">${total} пар</span>
+    </div>
+  `;
+
+  if (filterDay) {
+    // Один день — без вкладок
+    const body = document.createElement('div');
+    body.className = 'room-body';
+    const lessons = (daySchedule[filterDay] || []).filter(l => lessonMatchesParity(l.weektype));
+    body.appendChild(buildDayContent(lessons));
+    card.appendChild(body);
+  } else {
+    // Несколько дней — вкладки
+    const tabs = document.createElement('div');
+    tabs.className = 'week-tabs';
+    const body = document.createElement('div');
+    body.className = 'room-body';
+
+    // Первый день с занятиями (с учётом чётности) или первый день
+    const activeDays = WEEKDAYS.filter(d => {
+      const ls = daySchedule[d] || [];
+      return ls.some(l => lessonMatchesParity(l.weektype));
+    });
+    const firstActive = activeDays[0] || WEEKDAYS[0];
+
+    WEEKDAYS.forEach(d => {
+      const rawLessons     = daySchedule[d] || [];
+      const visibleLessons = rawLessons.filter(l => lessonMatchesParity(l.weektype));
+      const hasPairs       = visibleLessons.length > 0;
+      const isFreeDayFull  = !hasPairs; // ни одной видимой пары
+
+      const tab = document.createElement('div');
+      tab.className = 'week-tab'
+        + (d === firstActive ? ' active' : '')
+        + (isFreeDayFull    ? ' free-day' : '');
+      tab.textContent   = WEEKDAY_LABELS[d];
+      tab.style.opacity = hasPairs ? '1' : '0.5'; // слегка приглушаем пустые, но не убираем
+      tab.dataset.day   = d;
+
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'day-row' + (d === firstActive ? ' visible' : '');
+      dayDiv.dataset.day = d;
+      dayDiv.appendChild(buildDayContent(visibleLessons));
+      body.appendChild(dayDiv);
+
+      tab.addEventListener('click', () => {
+        tabs.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+        body.querySelectorAll('.day-row').forEach(r => r.classList.remove('visible'));
+        tab.classList.add('active');
+        dayDiv.classList.add('visible');
+      });
+
+      tabs.appendChild(tab);
+    });
+
+    card.appendChild(tabs);
+    card.appendChild(body);
+  }
+
+  return card;
+}
+
+/* ── Проверка практик: все ли группы занятия сейчас на практике ──
+   Для каждой группы из edu_group ищем период в practices где:
+     practices[i].group === groupName  И  start_date <= today <= end_date
+   Возвращает true только если ВСЕ группы покрыты одновременно.            */
+function checkAllGroupsOnPractice(lesson, date) {
+  const groups    = Array.isArray(lesson.edu_group) ? lesson.edu_group : [lesson.edu_group];
+  const practices = lesson.practices || [];
+
+  // Нет практик → аудитория занята
+  if (!practices.length) return { onPractice: false };
+
+  // Нормализуем текущую дату до полуночи для честного сравнения
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  // Фильтруем группы, у которых есть хотя бы один покрывающий период
+  const coveredGroups = groups.filter(groupName =>
+    practices.some(p => {
+      if (p.group !== groupName) return false;
+      const s  = new Date(p.start_date);
+      const e  = new Date(p.end_date);
+      const sd = new Date(s.getFullYear(), s.getMonth(), s.getDate());
+      const ed = new Date(e.getFullYear(), e.getMonth(), e.getDate());
+      return d >= sd && d <= ed;
+    })
+  );
+
+  return {
+    onPractice: coveredGroups.length === groups.length, // ВСЕ группы покрыты
+    groups: coveredGroups,
+  };
+}
+
+/* ── Содержимое одного дня (с зелёными gap-ячейками) ── */
+function buildDayContent(lessons) {
+  const frag = document.createDocumentFragment();
+
+  if (!lessons.length) {
+    // День полностью свободен
+    const block = document.createElement('div');
+    block.className = 'free-day-block';
+    block.innerHTML = `
+      <span class="free-day-icon">🟢</span>
+      <span class="free-day-text">весь день свободен</span>
+    `;
+    frag.appendChild(block);
+    return frag;
+  }
+
+  // Сортируем по номеру пары
+  const sorted = [...lessons].sort((a, b) => a.lesson_number - b.lesson_number);
+
+  // Определяем диапазон: от 1 до последней занятой пары
+  const maxLesson = sorted[sorted.length - 1].lesson_number;
+
+  // Строим Map: номер_пары → массив занятий (может быть несколько групп/подгрупп)
+  const byNum = new Map();
+  sorted.forEach(l => {
+    if (!byNum.has(l.lesson_number)) byNum.set(l.lesson_number, []);
+    byNum.get(l.lesson_number).push(l);
+  });
+
+  // Текущая дата для проверки практик
+  const today = new Date();
+
+  // Идём от 1 до maxLesson, заполняя занятые и свободные слоты
+  for (let num = 1; num <= maxLesson; num++) {
+    if (byNum.has(num)) {
+      byNum.get(num).forEach((l, idx) => {
+
+        // Проверяем: все ли группы занятия сейчас на практике?
+        const pc = checkAllGroupsOnPractice(l, today);
+
+        if (pc.onPractice) {
+          // Все группы на практике → аудитория свободна, показываем пометку
+          const row = document.createElement('div');
+          row.className = 'free-row';
+          const groups = Array.isArray(l.edu_group)
+            ? l.edu_group.map(esc).join(', ')
+            : esc(l.edu_group);
+          row.innerHTML = `
+            <span class="free-num">${idx === 0 ? num : ''}</span>
+            <div style="display:flex;flex-direction:column;gap:2px">
+              <span class="free-label"><span class="free-dot"></span>Группа на практике</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--free-text);opacity:.75">${groups}</span>
+            </div>
+          `;
+          frag.appendChild(row);
+
+        } else {
+          // Обычная занятая пара
+          const row = document.createElement('div');
+          row.className = 'lesson-row';
+
+          const typeInfo = LESSON_TYPE_CFG[l.lesson_type] || { label: l.lesson_type, cls: 'badge-type-lecture' };
+          const weekInfo = WEEKTYPE_CFG[l.weektype]        || { label: l.weektype,    cls: 'badge-week-both'   };
+          const subgroup = l.subgroup > 0
+            ? `<span class="badge badge-week-both">п/г ${l.subgroup}</span>` : '';
+          const groups   = Array.isArray(l.edu_group)
+            ? l.edu_group.map(esc).join(', ')
+            : esc(l.edu_group);
+
+          row.innerHTML = `
+            <span class="lesson-num">${idx === 0 ? num : ''}</span>
+            <div class="lesson-info">
+              <div class="lesson-discipline">${esc(l.discipline)}</div>
+              <div class="lesson-meta">
+                <span class="badge ${typeInfo.cls}">${typeInfo.label}</span>
+                <span class="badge ${weekInfo.cls}">${weekInfo.label}</span>
+                ${subgroup}
+              </div>
+              <div class="lesson-teacher">
+                ${esc(l.teacher_name)} ·
+                <span class="lesson-group">${groups}</span> ·
+                ${l.students_count} чел.
+              </div>
+            </div>
+          `;
+          frag.appendChild(row);
+        }
+      });
+    } else {
+      // Свободная пара (gap между занятыми)
+      const row = document.createElement('div');
+      row.className = 'free-row';
+      row.innerHTML = `
+        <span class="free-num">${num}</span>
+        <span class="free-label"><span class="free-dot"></span>свободно</span>
+      `;
+      frag.appendChild(row);
+    }
+  }
+
+  return frag;
+}
+
+/* ══════════════════════════════════════════════════
+   УТИЛИТЫ
+══════════════════════════════════════════════════ */
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ══════════════════════════════════════════════════
+   ИНИЦИАЛИЗАЦИЯ
+══════════════════════════════════════════════════ */
+showEmptyState();
+// Установить начальное состояние кнопки чётности
+setParity('even');
+// Enter в поле URL
+document.getElementById('api-url').addEventListener('keydown', e => {
+  if (e.key === 'Enter') loadWorkload();
+});
+</script>
+
+</body>
+</html>

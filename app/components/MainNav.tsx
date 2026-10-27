@@ -57,6 +57,9 @@ export function MainNav() {
             <Link href="/" className="hover:text-blue-200 transition">
               Главная
             </Link>
+            <Link href="/auditoriums" className="hover:text-blue-200 transition">
+              Загруженность
+            </Link>
             {isAdmin && (
               <>
                 <Link href="/cabinets" className="hover:text-blue-200 transition">

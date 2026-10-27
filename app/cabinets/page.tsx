@@ -30,6 +30,22 @@ export default function CabinetsPage() {
         >
           Добавить кабинет
         </Link>
+
+        <div className="flex gap-2">
+          {/* Кнопка перехода к загруженности аудиторий */}
+          <Link
+            href="/cabinets/workload"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
+          >
+            Загруженность
+          </Link>
+          <Link
+            href="/cabinets/new"
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition"
+          >
+            Добавить кабинет
+          </Link>
+        </div>
       </div>
 
       {cabinets.length === 0 ? (
