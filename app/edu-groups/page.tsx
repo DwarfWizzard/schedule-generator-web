@@ -115,10 +115,10 @@ export default function EduGroupsPage() {
             </label>
             <input
               type="text"
-              list="group-profiles-list"
               value={profileFilter}
               onChange={(e) => setProfileFilter(e.target.value)}
               placeholder="Введите профиль..."
+              autoComplete="off"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <datalist id="group-profiles-list">
@@ -134,8 +134,8 @@ export default function EduGroupsPage() {
             </label>
             <input
               type="text"
-              list="group-years-list"
               value={yearFilter}
+              autoComplete="off"
               onChange={(e) => setYearFilter(e.target.value)}
               placeholder="Введите год..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"

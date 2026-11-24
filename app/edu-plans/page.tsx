@@ -158,8 +158,8 @@ export default function EduPlansPage() {
             </label>
             <input
               type="text"
-              list="plan-years-list"
               value={yearFilter}
+              autoComplete="off"
               onChange={(e) => setYearFilter(e.target.value)}
               placeholder="Введите год..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -177,8 +177,8 @@ export default function EduPlansPage() {
             </label>
             <input
               type="text"
-              list="plan-directions-list"
               value={directionFilter}
+              autoComplete="off"
               onChange={(e) => setDirectionFilter(e.target.value)}
               placeholder="Введите направление..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -196,8 +196,8 @@ export default function EduPlansPage() {
             </label>
             <input
               type="text"
-              list="plan-departments-list"
               value={departmentFilter}
+              autoComplete="off"
               onChange={(e) => setDepartmentFilter(e.target.value)}
               placeholder="Введите кафедру..."
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
